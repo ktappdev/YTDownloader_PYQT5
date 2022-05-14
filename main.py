@@ -1,7 +1,8 @@
 import sys
 from PyQt5 import uic
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QDialog, QApplication, QWidget, QStackedWidget, QMainWindow, QPushButton, QLabel
+from PyQt5.QtWidgets import QDialog, QApplication, QWidget, QStackedWidget, QMainWindow, QPushButton, QLabel, QLineEdit, \
+    QRadioButton
 
 
 class MainUiWindow(QMainWindow):
@@ -10,13 +11,25 @@ class MainUiWindow(QMainWindow):
         uic.loadUi("MainUiWindow.ui", self)
         self.download_button = self.findChild(QPushButton, "download_button")
         self.open_folder = self.findChild(QPushButton, "open_folder")
-        self.updates_label = self.findChild(QLabel, "updates_label")
+        self.update_label = self.findChild(QLabel, "update_label")
+        self.op_input = self.findChild(QLineEdit, "op_input")
+        self.link = self.findChild(QLineEdit, "link")
+        self.select_clean_audio = self.findChild(QRadioButton, "select_clean_audio")
+        self.select_audio = self.findChild(QRadioButton, "select_audio")
+        self.select_raw_audio = self.findChild(QRadioButton, "select_raw_audio")
 
 
         self.download_button.clicked.connect(lambda: self.action())
 
+
     def action(self):
-        self.updates_label.setText("clicked")
+        if self.select_audio.isChecked():
+            self.update_label.setText("just audio")
+        elif self.select_raw_audio.isChecked():
+            self.update_label.setText("raw audio")
+        elif self.select_clean_audio.isChecked():
+            self.update_label.setText("clean audio")
+
 
 app = QApplication(sys.argv)
 

@@ -74,7 +74,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="updates_label">
+      <widget class="QLabel" name="update_label">
        <property name="font">
         <font>
          <italic>true</italic>
@@ -93,7 +93,7 @@ color: rgb(255, 255, 255);</string>
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="lineEdit_2">
+      <widget class="QLineEdit" name="op_input">
        <property name="minimumSize">
         <size>
          <width>0</width>
@@ -119,7 +119,7 @@ background-color: rgb(255, 255, 255);</string>
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="lineEdit">
+      <widget class="QLineEdit" name="link">
        <property name="minimumSize">
         <size>
          <width>0</width>
@@ -220,7 +220,7 @@ border-color: rgb(255, 255, 60);</string>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
-      <widget class="QRadioButton" name="radioButton">
+      <widget class="QRadioButton" name="select_clean_audio">
        <property name="styleSheet">
         <string notr="true">color: rgb(255, 255, 255);
 </string>
@@ -234,7 +234,7 @@ border-color: rgb(255, 255, 60);</string>
       </widget>
      </item>
      <item>
-      <widget class="QRadioButton" name="radioButton_2">
+      <widget class="QRadioButton" name="select_audio">
        <property name="styleSheet">
         <string notr="true">color: rgb(255, 255, 255);</string>
        </property>
@@ -244,7 +244,7 @@ border-color: rgb(255, 255, 60);</string>
       </widget>
      </item>
      <item>
-      <widget class="QRadioButton" name="radioButton_3">
+      <widget class="QRadioButton" name="select_raw_audio">
        <property name="styleSheet">
         <string notr="true">color: rgb(255, 255, 255);</string>
        </property>
