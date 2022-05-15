@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>550</width>
-    <height>400</height>
+    <height>450</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,13 +19,13 @@
   <property name="minimumSize">
    <size>
     <width>550</width>
-    <height>400</height>
+    <height>450</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>550</width>
-    <height>400</height>
+    <height>450</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -41,40 +41,30 @@
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>150</y>
-      <width>532</width>
-      <height>233</height>
+      <x>20</x>
+      <y>160</y>
+      <width>511</width>
+      <height>268</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
      <property name="sizeConstraint">
-      <enum>QLayout::SetMaximumSize</enum>
+      <enum>QLayout::SetDefaultConstraint</enum>
      </property>
-     <item>
-      <widget class="QProgressBar" name="progressBar">
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
-       <property name="value">
-        <number>25</number>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-       <property name="textVisible">
-        <bool>false</bool>
-       </property>
-       <property name="invertedAppearance">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
+     <item alignment="Qt::AlignRight">
       <widget class="QLabel" name="update_label">
+       <property name="minimumSize">
+        <size>
+         <width>422</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>422</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="font">
         <font>
          <italic>true</italic>
@@ -85,7 +75,7 @@
 color: rgb(255, 255, 255);</string>
        </property>
        <property name="text">
-        <string>Updates</string>
+        <string>Enter song name and artiste in the search box</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -93,64 +83,165 @@ color: rgb(255, 255, 255);</string>
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="op_input">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>40</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>12</pointsize>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string>Ennter a folder name to save the next download, if nothing is provided all downloads will be in &quot;downloads/youtube&quot;</string>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">border: 2px solid red;
-color: rgb(75, 76, 76);
-background-color: rgb(255, 255, 255);</string>
-       </property>
-       <property name="placeholderText">
-        <string>Specify a folder or leave blank - default folder &quot;downloads/youtube&quot;</string>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="styleSheet">
+          <string notr="true">color: rgb(255, 255, 255);</string>
+         </property>
+         <property name="text">
+          <string>Progress: </string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QProgressBar" name="progressBar">
+         <property name="minimumSize">
+          <size>
+           <width>422</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>422</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="autoFillBackground">
+          <bool>false</bool>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="value">
+          <number>100</number>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="textVisible">
+          <bool>false</bool>
+         </property>
+         <property name="invertedAppearance">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item>
-      <widget class="QLineEdit" name="link">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>40</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>12</pointsize>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string>Enter song name and artiste</string>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">border: 2px solid red;
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <widget class="QLabel" name="label_4">
+         <property name="styleSheet">
+          <string notr="true">color: rgb(255, 255, 255);</string>
+         </property>
+         <property name="text">
+          <string>Save to: </string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="op_input">
+         <property name="minimumSize">
+          <size>
+           <width>422</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>422</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>18</pointsize>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Enter a folder name to save the next download, if nothing is provided all downloads will be in &quot;downloads/youtube&quot;</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">border: 2px solid red;
 color: rgb(75, 76, 76);
-background-color: rgb(255, 255, 255);</string>
-       </property>
-       <property name="placeholderText">
-        <string>Enter song name and artiste</string>
-       </property>
-      </widget>
+background-color: rgb(255, 255, 255);
+border-radius:10px; 
+</string>
+         </property>
+         <property name="placeholderText">
+          <string>Default folder &quot;Downloads/youtube&quot;</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <item>
+        <widget class="QLabel" name="label_5">
+         <property name="styleSheet">
+          <string notr="true">color: rgb(255, 255, 255);</string>
+         </property>
+         <property name="text">
+          <string>Search Box: </string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="link">
+         <property name="minimumSize">
+          <size>
+           <width>422</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>422</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>18</pointsize>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Enter song name and artiste</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">border: 2px solid red;
+color: rgb(75, 76, 76);
+background-color: rgb(255, 255, 255);
+border-radius:10px; 
+</string>
+         </property>
+         <property name="placeholderText">
+          <string>Enter song name and artiste</string>
+         </property>
+         <property name="clearButtonEnabled">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
+       <item alignment="Qt::AlignRight">
         <widget class="QPushButton" name="download_button">
          <property name="minimumSize">
           <size>
-           <width>0</width>
+           <width>422</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>422</width>
            <height>40</height>
           </size>
          </property>
@@ -172,33 +263,62 @@ color: rgb(255, 255, 255);</string>
        </item>
       </layout>
      </item>
-     <item alignment="Qt::AlignHCenter">
-      <widget class="QPushButton" name="open_folder">
-       <property name="minimumSize">
-        <size>
-         <width>200</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>100</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <italic>true</italic>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">background-color: rgb(237, 0, 6);
-color: rgb(255, 255, 255);</string>
-       </property>
-       <property name="text">
-        <string>Open Folder</string>
-       </property>
-      </widget>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item alignment="Qt::AlignRight|Qt::AlignVCenter">
+        <widget class="QPushButton" name="open_folder">
+         <property name="minimumSize">
+          <size>
+           <width>165</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>150</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <italic>true</italic>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(237, 0, 6);
+color: rgb(255, 255, 255);
+</string>
+         </property>
+         <property name="text">
+          <string>Open Folder</string>
+         </property>
+        </widget>
+       </item>
+       <item alignment="Qt::AlignRight|Qt::AlignVCenter">
+        <widget class="QPushButton" name="download_list_button">
+         <property name="minimumSize">
+          <size>
+           <width>165</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>165</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(237, 0, 6);
+color: rgb(255, 255, 255);
+</string>
+         </property>
+         <property name="text">
+          <string>Download List</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </widget>
@@ -290,8 +410,8 @@ border-color: rgb(255, 255, 60);</string>
      <rect>
       <x>-1</x>
       <y>-5</y>
-      <width>551</width>
-      <height>411</height>
+      <width>611</width>
+      <height>511</height>
      </rect>
     </property>
     <property name="text">

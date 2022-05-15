@@ -31,13 +31,13 @@ def get_os():
         print('err')
 
 
-class BoxLayoutUI(BoxLayout):
-    link = ObjectProperty(None)
-    op_input = ObjectProperty(None)
-    update_label = ObjectProperty(None)
-    download_button = ObjectProperty(None)
-    main_canv_image = resource_path('bg.png')
-    yt_logo = resource_path('ytlogo.png')
+# class BoxLayoutUI(BoxLayout):
+#     link = ObjectProperty(None)
+#     op_input = ObjectProperty(None)
+#     update_label = ObjectProperty(None)
+#     download_button = ObjectProperty(None)
+#     main_canv_image = resource_path('bg.png')
+#     yt_logo = resource_path('ytlogo.png')
 
     def download_button_action(self):
         self.download_button.disabled = True
@@ -95,12 +95,5 @@ class BoxLayoutUI(BoxLayout):
                 print(e)
 
 
-class YoutubeDownloader(App):
-    def build(self):
-        self.title = 'Youtube Clean Audio Downloader - KTAD'
-        kv = Builder.load_file(resource_path('yt.kv'))
-        return kv
-
-
 if __name__ == "__main__":
-    YoutubeDownloader().run()
+    pass
