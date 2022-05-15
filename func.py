@@ -18,13 +18,13 @@ def rename_file(
     os.rename(song_path, new_file)
 
 
-def get_os():
+def get_os_downloads_folder():
     if platform == "linux" or platform == "linux2":
         return str(os.path.join(Path.home(), "Downloads"))
     elif platform == "darwin":
         return str(os.path.join(Path.home(), "Downloads"))
     elif platform == "win32":
-        return str(os.path.expanduser("~\\Desktop"))
+        return str(os.path.expanduser("~\\Downloads"))
     else:
         print('err')
 
@@ -33,6 +33,7 @@ def get_songs_from_text(txt):
     with open(txt) as fp:
         Lines = fp.readlines()
         return Lines
+
 
 
 if __name__ == "__main__":

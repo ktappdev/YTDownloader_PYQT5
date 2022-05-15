@@ -3,7 +3,7 @@ from pytube import YouTube
 from pytube import Search
 from pytube import Playlist
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QLineEdit, QRadioButton
+from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QLineEdit, QRadioButton, QFileDialog
 # from PyQt5.QtWidgets import *
 from PyQt5 import uic, QtGui
 import os
@@ -31,9 +31,11 @@ class MainUiWindow(QMainWindow):
         self.download_location_label = self.findChild(QLabel, "download_location_label")
 
         # Actions
-        self.download_button.clicked.connect(lambda: self.download_clicked())
+        self.download_location_label.setText(f'Download Location: {func.get_os_downloads_folder()}\\Youtube\\')
+        self.download_button.clicked.connect(self.download_clicked)
         self.open_folder.clicked.connect(self.open_folder_clicked)
-        self.download_list_button.clicked.connect(lambda: self.open_folder_clicked())
+        self.download_list_button.clicked.connect(self.open_folder_clicked)
+        self.change_location_button.clicked.connect(self.download_location_picker)
 
     def download_clicked(self):
         radio_button_state = "radio edit clean audio"
@@ -48,15 +50,10 @@ class MainUiWindow(QMainWindow):
             radio_button_state = "radio edit clean audio"
 
         self.update_label.setText('Searching...')
-        default_loc = func.get_os() + '/Youtube/'  # Default folder
-        if self.op_input.text() == '':
-            download_info = self.youtube_single_download(
-                self.searchtube(self.link.text(), radio_button_state), default_loc)
-        else:
-            user_location = default_loc + self.op_input.text()
-            download_info = self.youtube_single_download(
-                self.searchtube(self.link.text(), radio_button_state),
-                user_location)
+        # default_loc = func.get_os_downloads_folder() + '/Youtube/'  # Default folder
+        download_location = self.download_location_label.text()[19:]
+        print(download_location)
+        download_info = self.youtube_single_download(self.searchtube(self.link.text(), radio_button_state), download_location)
         self.update_label.setText(download_info[0])
         file_path = download_info[1]
         song_info = download_info[2]
@@ -71,13 +68,13 @@ class MainUiWindow(QMainWindow):
     def open_folder_clicked(self):
         # desktop = os.path.expanduser("~\\Desktop\\")
         # print(desktop)
-        default_loc = func.get_os() + '/Youtube/'
-        print(default_loc)
-        if self.op_input.text() == '':
-            path = default_loc
-        else:
-            path = default_loc + self.op_input.text()
-
+        # default_loc = func.get_os_downloads_folder() + '\\Youtube\\'
+        # print(default_loc)
+        # if self.op_input.text() == '':
+        #     path = default_loc
+        # else:
+        #     path = default_loc + self.op_input.text()
+        path = self.download_location_label.text()[19:]
         if platform == "win32":
             try:
                 os.startfile(path)
@@ -112,7 +109,7 @@ class MainUiWindow(QMainWindow):
             radio_button_state = "radio edit clean audio"
 
         self.update_label.setText('Searching...')
-        default_loc = func.get_os() + '/Youtube/'  # Default folder
+        default_loc = func.get_os_downloads_folder() + '/Youtube/'  # Default folder
         if self.op_input.text() == '':
             download_info = self.youtube_single_download(
                 self.searchtube(self.link.text(), radio_button_state), default_loc)
@@ -187,6 +184,10 @@ class MainUiWindow(QMainWindow):
             self.update_label.setText(f'Currently downloading song - {song}')
             self.youtube_single_download(song)
 
+    def download_location_picker(self):
+        user_location = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
+        self.download_location_label.setText(f'Download Location: {user_location}')
+        return user_location
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
