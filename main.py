@@ -1,9 +1,11 @@
+
 from pytube import YouTube
 from pytube import Search
 from pytube import Playlist
 import sys
-from PyQt5 import uic
-from PyQt5.QtWidgets import QApplication, QStackedWidget, QMainWindow, QPushButton, QLabel, QLineEdit, QRadioButton
+from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QLineEdit, QRadioButton
+# from PyQt5.QtWidgets import *
+from PyQt5 import uic, QtGui
 import os
 from sys import platform
 import subprocess
@@ -17,14 +19,16 @@ class MainUiWindow(QMainWindow):
         super(MainUiWindow, self).__init__()
         uic.loadUi("MainUiWindow.ui", self)
         self.download_button = self.findChild(QPushButton, "download_button")
-        self.open_folder = self.findChild(QPushButton, "open_folder")
         self.update_label = self.findChild(QLabel, "update_label")
+        self.open_folder = self.findChild(QPushButton, "open_folder")
         self.op_input = self.findChild(QLineEdit, "op_input")
         self.link = self.findChild(QLineEdit, "link")
-        self.select_clean_audio = self.findChild(QRadioButton, "select_clean_audio")
         self.select_audio = self.findChild(QRadioButton, "select_audio")
         self.select_raw_audio = self.findChild(QRadioButton, "select_raw_audio")
+        self.select_clean_audio = self.findChild(QRadioButton, "select_clean_audio")
         self.download_list_button = self.findChild(QPushButton, "download_list_button")
+        self.change_location_button = self.findChild(QPushButton, "change_location_button")
+        self.download_location_label = self.findChild(QLabel, "download_location_label")
 
         # Actions
         self.download_button.clicked.connect(lambda: self.download_clicked())
@@ -188,11 +192,14 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     mainuiwindow = MainUiWindow()
 
-    widget = QStackedWidget()
-    widget.addWidget(mainuiwindow)
-    widget.setFixedHeight(450)
-    widget.setFixedWidth(550)
-    widget.show()
+    icon = QtGui.QIcon()
+    icon.addPixmap(QtGui.QPixmap("icon.ico"), QtGui.QIcon.Selected, QtGui.QIcon.On)
+    mainuiwindow.setWindowIcon(icon)
+
+    mainuiwindow.setFixedWidth(491)
+    mainuiwindow.setFixedHeight(292)
+    mainuiwindow.show()
+
     try:
         sys.exit(app.exec())
     except Exception as e:
