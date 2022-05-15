@@ -28,7 +28,7 @@ class MainUiWindow(QMainWindow):
 
         # Actions
         self.download_button.clicked.connect(lambda: self.download_clicked())
-        self.open_folder.clicked.connect(lambda: self.open_folder_clicked())
+        self.open_folder.clicked.connect(self.open_folder_clicked)
         self.download_list_button.clicked.connect(lambda: self.open_folder_clicked())
 
     def download_clicked(self):

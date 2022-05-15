@@ -327,7 +327,7 @@ color: rgb(255, 255, 255);
      <rect>
       <x>340</x>
       <y>30</y>
-      <width>201</width>
+      <width>191</width>
       <height>101</height>
      </rect>
     </property>
@@ -378,9 +378,9 @@ border-color: rgb(255, 255, 60);</string>
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>20</x>
       <y>30</y>
-      <width>321</width>
+      <width>311</width>
       <height>101</height>
      </rect>
     </property>
