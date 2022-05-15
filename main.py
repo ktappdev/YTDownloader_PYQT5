@@ -9,7 +9,6 @@ from sys import platform
 import subprocess
 import func
 import ssl
-
 ssl._create_default_https_context = ssl._create_unverified_context  # important used to make internet coms legit - windows issue
 
 
@@ -94,7 +93,12 @@ class MainUiWindow(QMainWindow):
                 print(e)
 
     def download_list_clicked(self):
-        list_of_songs = func.get_songs_from_text('listofsongs.txt')
+        try:
+            list_of_songs = func.get_songs_from_text('listofsongs.txt')
+            self.update_label.setText("text file found...")
+        except Exception as e:
+            self.update_label.setText(str(e))
+
         radio_button_state = "radio edit clean audio"
         if self.select_audio.isChecked():
             radio_button_state = "official audio"
@@ -117,42 +121,45 @@ class MainUiWindow(QMainWindow):
         file_path = download_info[1]
         song_info = download_info[2]
         try:
+            self.update_label.setText('converting...')
             func.rename_file(file_path)  # remove the word downloaded 11 characters, its the title so i add mp4
+            self.update_label.setText('converted...')
         except Exception as e:
-            print(str(e))
+            self.update_label.setText(e)
 
         self.link.setText("")
 
         # *************************** YOUTUBE STUFF *************************
 
     def youtube_single_download(self, link, op):
-        if link == []:
-            # print('Error - no song specified or song downloaded already')
+        if not link:
+            self.update_label.setText('Error - no song specified or song downloaded already')
             return
         # print('single download func ran')
-        yt = YouTube(link[
-                         0])  # not sure whay i does remove this indexing thing but i suspect its for thwee playlisting to work... after 2 weeks im lost when the program gcrashes lol i need to handle this better asap
+        yt = YouTube(link[0])
         # print(f'single download func debug 2 {yt}')
         yt.streams.filter(only_audio=True)
-        # print("Starting download....")
+        self.update_label.setText('Starting download...')
         stream = yt.streams.get_by_itag(140)
         file_path = stream.download(output_path=op)
+        self.update_label.setText('Download complete')
         info_list = [yt.title, file_path, yt.vid_info]
         return info_list
 
-    def searchtube(txt, radio_button_state):
+    def searchtube(self, txt, radio_button_state):
         if txt == '':
             return []
         # print('search func ran')
+        self.update_label.setText('Searching for your song...')
         video_list = []
         s = Search(f'{txt} {radio_button_state}')
         for obj in s.results:
-            x = str(
-                obj)  # in the future see if theyy have an easier way to use these youtube obj in search results. I doubt what i'm doing is the easy way lol
+            x = str(obj)  # in the future see if theyy have an easier way to use these youtube obj in search results. I doubt what i'm doing is the easy way lol
             video_id = x[x.rfind('=') + 1:].strip('>')
             video_url = f'https://www.youtube.com/watch?v={video_id}'
             video_list.append(video_url)
-        # print(f'search complete {video_list}')
+            self.update_label.setText('getting list of matching audio')
+        self.update_label.setText('Search complete')
         return video_list
 
     def download_youtube_playlist(self):
@@ -167,18 +174,20 @@ class MainUiWindow(QMainWindow):
 
     def download_list_of_songs_from_file(self, list_of_songs):
         print('playlist from file func ran')
+        self.update_label.setText('Getting list of songs from file')
         # playlist = Playlist(pl)
-        print('*' * 40)
-        print(f'Playlist from file contains {len(list_of_songs)} items')
-        print('*' * 40)
+        # print('*' * 40)
+        self.update_label.setText(f'File contains {len(list_of_songs)} songs')
+        # print('*' * 40)
         for song in list_of_songs:
-            print(song)
+            self.update_label.setText(f'Currently downloading song - {song}')
             self.youtube_single_download(song)
 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     mainuiwindow = MainUiWindow()
+
     widget = QStackedWidget()
     widget.addWidget(mainuiwindow)
     widget.setFixedHeight(450)
