@@ -1,5 +1,4 @@
 import threading
-import ctypes
 from pytube import YouTube
 from pytube import Search
 from pytube import Playlist
