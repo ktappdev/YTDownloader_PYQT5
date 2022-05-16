@@ -198,7 +198,7 @@ if __name__ == "__main__":
     mainuiwindow.setWindowIcon(icon)
 
     mainuiwindow.setFixedWidth(491)
-    mainuiwindow.setFixedHeight(292)
+    mainuiwindow.setFixedHeight(386)
     mainuiwindow.show()
 
     try:
