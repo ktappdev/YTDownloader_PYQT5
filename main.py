@@ -1,9 +1,9 @@
-
+import threading
 from pytube import YouTube
 from pytube import Search
 from pytube import Playlist
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QLineEdit, QRadioButton, QFileDialog
+from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QLineEdit, QRadioButton, QFileDialog, QProgressBar
 # from PyQt5.QtWidgets import *
 from PyQt5 import uic, QtGui
 import os
@@ -23,6 +23,7 @@ class MainUiWindow(QMainWindow):
         self.open_folder = self.findChild(QPushButton, "open_folder")
         self.op_input = self.findChild(QLineEdit, "op_input")
         self.link = self.findChild(QLineEdit, "link")
+        self.progress_bar = self.findChild(QProgressBar, 'progressBar')
         self.select_audio = self.findChild(QRadioButton, "select_audio")
         self.select_raw_audio = self.findChild(QRadioButton, "select_raw_audio")
         self.select_clean_audio = self.findChild(QRadioButton, "select_clean_audio")
@@ -30,9 +31,12 @@ class MainUiWindow(QMainWindow):
         self.change_location_button = self.findChild(QPushButton, "change_location_button")
         self.download_location_label = self.findChild(QLabel, "download_location_label")
 
+        self.download_thread = threading.Thread(target=self.download_clicked) # so i really got this to work on the first try lol wow
+
         # Actions
         self.download_location_label.setText(f'Download Location: {func.get_os_downloads_folder()}\\Youtube\\')
-        self.download_button.clicked.connect(self.download_clicked)
+        # self.download_button.clicked.connect(self.download_clicked)
+        self.download_button.clicked.connect(lambda: self.download_thread.start()) # I'm greatnessss
         self.open_folder.clicked.connect(self.open_folder_clicked)
         self.download_list_button.clicked.connect(self.open_folder_clicked)
         self.change_location_button.clicked.connect(self.download_location_picker)
@@ -66,14 +70,6 @@ class MainUiWindow(QMainWindow):
         self.download_button.disabled = False
 
     def open_folder_clicked(self):
-        # desktop = os.path.expanduser("~\\Desktop\\")
-        # print(desktop)
-        # default_loc = func.get_os_downloads_folder() + '\\Youtube\\'
-        # print(default_loc)
-        # if self.op_input.text() == '':
-        #     path = default_loc
-        # else:
-        #     path = default_loc + self.op_input.text()
         path = self.download_location_label.text()[19:]
         if platform == "win32":
             try:

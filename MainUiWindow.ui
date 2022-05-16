@@ -71,7 +71,7 @@
        <property name="maximumSize">
         <size>
          <width>16777215</width>
-         <height>10</height>
+         <height>15</height>
         </size>
        </property>
        <property name="autoFillBackground">
@@ -108,7 +108,7 @@
           <string>Enter song name and artiste</string>
          </property>
          <property name="styleSheet">
-          <string notr="true">border: 1px solid black;
+          <string notr="true">border: 1px solid white;
 color: rgb(181, 184, 184);
 background-color: rgb(255, 255, 255);</string>
          </property>
@@ -126,7 +126,7 @@ background-color: rgb(255, 255, 255);</string>
       </layout>
      </item>
      <item>
-      <widget class="QGroupBox" name="">
+      <widget class="QGroupBox" name="groupBox">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item alignment="Qt::AlignVCenter">
          <widget class="QPushButton" name="download_list_button">
@@ -160,7 +160,7 @@ background-color: rgb(255, 255, 255);</string>
            <bool>false</bool>
           </property>
           <property name="flat">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -193,7 +193,7 @@ background-color: rgb(255, 255, 255);</string>
            <bool>false</bool>
           </property>
           <property name="flat">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -201,35 +201,37 @@ background-color: rgb(255, 255, 255);</string>
       </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="_2">
-       <property name="spacing">
-        <number>0</number>
-       </property>
-       <item alignment="Qt::AlignHCenter">
-        <widget class="QLabel" name="download_location_label">
-         <property name="font">
-          <font>
-           <family>Arial</family>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">color: rgb(50, 50, 50);</string>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
-         </property>
-         <property name="text">
-          <string>Download Location:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-      </layout>
+      <widget class="QWidget" name="widget" native="true">
+       <layout class="QHBoxLayout" name="_2">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <item alignment="Qt::AlignHCenter">
+         <widget class="QLabel" name="download_location_label">
+          <property name="font">
+           <font>
+            <family>Arial</family>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: rgb(50, 50, 50);</string>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
+          </property>
+          <property name="text">
+           <string>Download Location:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </item>
      <item>
-      <widget class="QGroupBox" name="">
+      <widget class="QGroupBox" name="groupBox">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
          <widget class="QPushButton" name="open_folder">
@@ -255,6 +257,15 @@ background-color: rgb(255, 255, 255);</string>
           </property>
           <property name="text">
            <string>Open Downloads Folder</string>
+          </property>
+          <property name="autoDefault">
+           <bool>false</bool>
+          </property>
+          <property name="default">
+           <bool>false</bool>
+          </property>
+          <property name="flat">
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -283,91 +294,8 @@ background-color: rgb(255, 255, 255);</string>
           <property name="text">
            <string>Change Save Location</string>
           </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>471</width>
-      <height>91</height>
-     </rect>
-    </property>
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <property name="spacing">
-      <number>10</number>
-     </property>
-     <item>
-      <widget class="QLabel" name="logo">
-       <property name="font">
-        <font>
-         <italic>true</italic>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>ytlogo.png</pixmap>
-       </property>
-       <property name="scaledContents">
-        <bool>true</bool>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QGroupBox" name="verticalGroupBox_2">
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">background-color: rgb(240, 9, 6);
-border-color: rgb(255, 255, 60);</string>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
-        <item>
-         <widget class="QRadioButton" name="select_clean_audio">
-          <property name="styleSheet">
-           <string notr="true">color: rgb(255, 255, 255);
-</string>
-          </property>
-          <property name="text">
-           <string>Clean Radio Edit</string>
-          </property>
-          <property name="checked">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QRadioButton" name="select_audio">
-          <property name="styleSheet">
-           <string notr="true">color: rgb(255, 255, 255);</string>
-          </property>
-          <property name="text">
-           <string>Official Audio [raw/clean]</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QRadioButton" name="select_raw_audio">
-          <property name="styleSheet">
-           <string notr="true">color: rgb(255, 255, 255);</string>
-          </property>
-          <property name="text">
-           <string>Raw Prefered</string>
+          <property name="flat">
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -389,15 +317,99 @@ border-color: rgb(255, 255, 60);</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(240, 240, 240);</string>
+     <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0.498, y2:0.0113636, stop:0 rgba(176, 176, 176, 255), stop:1 rgba(238, 238, 238, 214));</string>
     </property>
     <property name="text">
      <string notr="true"/>
     </property>
    </widget>
+   <widget class="QLabel" name="logo">
+    <property name="geometry">
+     <rect>
+      <x>11</x>
+      <y>11</y>
+      <width>205</width>
+      <height>89</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <italic>true</italic>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>ytlogo.png</pixmap>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="verticalGroupBox_2">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>10</y>
+      <width>211</width>
+      <height>91</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(240, 9, 6);
+border-color: rgb(255, 255, 60);</string>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <widget class="QRadioButton" name="select_clean_audio">
+       <property name="styleSheet">
+        <string notr="true">color: rgb(255, 255, 255);
+</string>
+       </property>
+       <property name="text">
+        <string>Clean Radio Edit</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="select_audio">
+       <property name="styleSheet">
+        <string notr="true">color: rgb(255, 255, 255);</string>
+       </property>
+       <property name="text">
+        <string>Official Audio [raw/clean]</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="select_raw_audio">
+       <property name="styleSheet">
+        <string notr="true">color: rgb(255, 255, 255);</string>
+       </property>
+       <property name="text">
+        <string>Raw Prefered</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
    <zorder>label</zorder>
+   <zorder>logo</zorder>
+   <zorder>verticalGroupBox_2</zorder>
    <zorder>verticalLayoutWidget</zorder>
-   <zorder>layoutWidget</zorder>
   </widget>
  </widget>
  <resources>
