@@ -1,4 +1,4 @@
-import threading
+from concurrent.futures import ThreadPoolExecutor
 from pytube import YouTube
 from pytube import Search
 from pytube import Playlist
@@ -156,7 +156,7 @@ class MainUiWindow(QMainWindow):
             video_url = f'https://www.youtube.com/watch?v={video_id}'
             video_list.append(video_url)
             self.update_label.setText('getting list of matching audio')
-        self.update_label.setText('Search complete')
+        self.update_label.setText('Search complete - Starting download')
         return video_list
 
     def download_youtube_playlist(self):
