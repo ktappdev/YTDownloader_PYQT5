@@ -3,7 +3,8 @@ from pytube import YouTube
 from pytube import Search
 from pytube import Playlist
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QLineEdit, QRadioButton, QFileDialog, QProgressBar
+from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QLineEdit, QRadioButton, QFileDialog, \
+    QProgressBar
 # from PyQt5.QtWidgets import *
 from PyQt5 import uic, QtGui
 import os
@@ -11,6 +12,7 @@ from sys import platform
 import subprocess
 import func
 import ssl
+
 ssl._create_default_https_context = ssl._create_unverified_context  # important used to make internet coms legit - windows issue
 
 
@@ -31,17 +33,17 @@ class MainUiWindow(QMainWindow):
         self.change_location_button = self.findChild(QPushButton, "change_location_button")
         self.download_location_label = self.findChild(QLabel, "download_location_label")
 
-        self.download_thread = threading.Thread(target=self.download_clicked) # so i really got this to work on the first try lol wow
+        # self.download_thread = threading.Thread(target=self.download_clicked) # so i really got this to work on the first try lol wow
 
         # Actions
         self.download_location_label.setText(f'Download Location: {func.get_os_downloads_folder()}\\Youtube\\')
-        # self.download_button.clicked.connect(self.download_clicked)
-        self.download_button.clicked.connect(lambda: self.download_thread.start()) # I'm greatnessss
+        self.download_button.clicked.connect(self.download_clicked)
+        # self.download_button.clicked.connect(self.download_thread.start) # I'm greatnessss
         self.open_folder.clicked.connect(self.open_folder_clicked)
         self.download_list_button.clicked.connect(self.open_folder_clicked)
         self.change_location_button.clicked.connect(self.download_location_picker)
 
-    def download_clicked(self):
+    def do_downloads_threaded(self): # this is ran from a threaded call made by the download button. 0_o
         radio_button_state = "radio edit clean audio"
         if self.link.text() == '':
             self.update_label.setText("ERROR - Please enter a song name and artiste")
@@ -57,7 +59,8 @@ class MainUiWindow(QMainWindow):
         # default_loc = func.get_os_downloads_folder() + '/Youtube/'  # Default folder
         download_location = self.download_location_label.text()[19:]
         print(download_location)
-        download_info = self.youtube_single_download(self.searchtube(self.link.text(), radio_button_state), download_location)
+        download_info = self.youtube_single_download(self.searchtube(self.link.text(), radio_button_state),
+                                                     download_location)
         self.update_label.setText(download_info[0])
         file_path = download_info[1]
         song_info = download_info[2]
@@ -68,7 +71,12 @@ class MainUiWindow(QMainWindow):
 
         self.link.setText("")
         self.download_button.disabled = False
-
+################################################
+    def download_clicked(self):
+        download_thread = threading.Thread(target=self.do_downloads_threaded)
+        download_thread.start()
+        download_thread.join()
+################################################
     def open_folder_clicked(self):
         path = self.download_location_label.text()[19:]
         if platform == "win32":
@@ -151,7 +159,8 @@ class MainUiWindow(QMainWindow):
         video_list = []
         s = Search(f'{txt} {radio_button_state}')
         for obj in s.results:
-            x = str(obj)  # in the future see if theyy have an easier way to use these youtube obj in search results. I doubt what i'm doing is the easy way lol
+            x = str(
+                obj)  # in the future see if theyy have an easier way to use these youtube obj in search results. I doubt what i'm doing is the easy way lol
             video_id = x[x.rfind('=') + 1:].strip('>')
             video_url = f'https://www.youtube.com/watch?v={video_id}'
             video_list.append(video_url)
@@ -184,6 +193,7 @@ class MainUiWindow(QMainWindow):
         user_location = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
         self.download_location_label.setText(f'Download Location: {user_location}')
         return user_location
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
