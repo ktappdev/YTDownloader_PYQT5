@@ -77,7 +77,6 @@ class MainUiWindow(QMainWindow):
     def download_clicked(self):
         executer = ThreadPoolExecutor(max_workers=3)          # I need to make a tutorial
         t = executer.submit(self.do_downloads_threaded)
-        print('here')
     ################################################
 
     def open_folder_clicked(self):
