@@ -325,63 +325,97 @@ background-color: rgb(233, 0, 9);</string>
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QGroupBox" name="verticalGroupBox_2">
+   <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
-      <x>270</x>
+      <x>290</x>
       <y>10</y>
-      <width>211</width>
+      <width>191</width>
       <height>91</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
+    </property>
     <property name="autoFillBackground">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(240, 9, 6);
-border-color: rgb(255, 255, 60);</string>
+     <string notr="true"/>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout_2">
-     <item>
-      <widget class="QRadioButton" name="select_clean_audio">
-       <property name="styleSheet">
-        <string notr="true">color: rgb(255, 255, 255);
-</string>
-       </property>
-       <property name="text">
-        <string>Clean Radio Edit</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QRadioButton" name="select_audio">
-       <property name="styleSheet">
-        <string notr="true">color: rgb(255, 255, 255);</string>
-       </property>
-       <property name="text">
-        <string>Official Audio [raw/clean]</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QRadioButton" name="select_raw_audio">
-       <property name="styleSheet">
-        <string notr="true">color: rgb(255, 255, 255);</string>
-       </property>
-       <property name="text">
-        <string>Raw Prefered</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <widget class="QWidget" name="tab">
+     <attribute name="title">
+      <string>Clean/ Raw</string>
+     </attribute>
+     <widget class="QRadioButton" name="select_audio">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>161</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string>Official Audio [raw/clean]</string>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="select_raw_audio">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>40</y>
+        <width>161</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string>Raw Prefered</string>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="select_clean_audio">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>2</y>
+        <width>161</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string>Clean Radio Edit</string>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_2">
+     <attribute name="title">
+      <string>Rename Options</string>
+     </attribute>
+    </widget>
    </widget>
    <zorder>label</zorder>
    <zorder>logo</zorder>
-   <zorder>verticalGroupBox_2</zorder>
    <zorder>verticalLayoutWidget</zorder>
+   <zorder>tabWidget</zorder>
   </widget>
  </widget>
  <resources>
