@@ -54,7 +54,7 @@ class MainUiWindow(QMainWindow):
             self.radio_button_state = "raw official audio"
         elif self.select_clean_audio.isChecked():
             self.radio_button_state = "radio edit clean audio"
-        self.update_label.setText('Searching...')
+        self.update_label.setText('Searching....')
         # default_loc = func.get_os_downloads_folder() + '/Youtube/'  # Default folder
         download_location = self.download_location_label.text()[19:]
         print('just before download')
