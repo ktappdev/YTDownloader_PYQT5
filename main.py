@@ -33,7 +33,6 @@ class MainUiWindow(QMainWindow):
         self.change_location_button = self.findChild(QPushButton, "change_location_button")
         self.download_location_label = self.findChild(QLabel, "download_location_label")
 
-        # self.download_thread = threading.Thread(target=self.download_clicked) # so i really got this to work on the first try lol wow
 
         # Actions
         self.download_location_label.setText(f'Download Location: {func.get_os_downloads_folder()}\\Youtube\\')
@@ -71,12 +70,13 @@ class MainUiWindow(QMainWindow):
 
         self.link.setText("")
         self.download_button.disabled = False
-################################################
+
+    ################################################
     def download_clicked(self):
-        download_thread = threading.Thread(target=self.do_downloads_threaded)
-        download_thread.start()
-        download_thread.join()
-################################################
+        executer = ThreadPoolExecutor(max_workers=3)          # I need to make a tutorial
+        t = executer.submit(self.do_downloads_threaded)
+    ################################################
+
     def open_folder_clicked(self):
         path = self.download_location_label.text()[19:]
         if platform == "win32":
