@@ -32,6 +32,7 @@ class MainUiWindow(QMainWindow):
         self.download_list_button = self.findChild(QPushButton, "download_list_button")
         self.change_location_button = self.findChild(QPushButton, "change_location_button")
         self.download_location_label = self.findChild(QLabel, "download_location_label")
+        self.radio_button_state = "radio edit clean audio"
 
 
         # Actions
@@ -48,16 +49,16 @@ class MainUiWindow(QMainWindow):
             return
 
         if self.select_audio.isChecked():
-            radio_button_state = "official audio"
+            self.radio_button_state = "official audio"
         elif self.select_raw_audio.isChecked():
-            radio_button_state = "raw official audio"
+            self.radio_button_state = "raw official audio"
         elif self.select_clean_audio.isChecked():
-            radio_button_state = "radio edit clean audio"
+            self.radio_button_state = "radio edit clean audio"
         self.update_label.setText('Searching...')
         # default_loc = func.get_os_downloads_folder() + '/Youtube/'  # Default folder
         download_location = self.download_location_label.text()[19:]
         print('just before download')
-        download_info = self.youtube_single_download(self.searchtube(self.link.text(), radio_button_state),
+        download_info = self.youtube_single_download(self.searchtube(self.link.text(), self.radio_button_state),
                                                      download_location)
         self.update_label.setText(download_info[0])
         file_path = download_info[1]
