@@ -35,7 +35,7 @@
       <x>10</x>
       <y>105</y>
       <width>471</width>
-      <height>270</height>
+      <height>281</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -44,9 +44,7 @@
        <property name="font">
         <font>
          <family>Arial</family>
-         <weight>75</weight>
-         <italic>false</italic>
-         <bold>true</bold>
+         <pointsize>12</pointsize>
         </font>
        </property>
        <property name="styleSheet">
@@ -63,34 +61,6 @@
        </property>
        <property name="wordWrap">
         <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QProgressBar" name="progressBar">
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>15</height>
-        </size>
-       </property>
-       <property name="autoFillBackground">
-        <bool>false</bool>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">color: rgb(237, 0, 6);</string>
-       </property>
-       <property name="value">
-        <number>25</number>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-       <property name="textVisible">
-        <bool>false</bool>
-       </property>
-       <property name="invertedAppearance">
-        <bool>false</bool>
        </property>
       </widget>
      </item>
@@ -151,13 +121,14 @@ background-color: rgb(255, 255, 255);</string>
            </font>
           </property>
           <property name="styleSheet">
-           <string notr="true">color: rgb(67, 69, 69);</string>
+           <string notr="true">background-color: rgb(233, 0, 9);
+color: rgb(250, 255, 255);</string>
           </property>
           <property name="text">
            <string>Download List</string>
           </property>
           <property name="default">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="flat">
            <bool>false</bool>
@@ -181,7 +152,8 @@ background-color: rgb(255, 255, 255);</string>
            </font>
           </property>
           <property name="styleSheet">
-           <string notr="true">color: rgb(67, 69, 69);</string>
+           <string notr="true">color: rgb(255, 255, 255);
+background-color: rgb(233, 0, 9);</string>
           </property>
           <property name="text">
            <string>Download Audio</string>
@@ -190,7 +162,7 @@ background-color: rgb(255, 255, 255);</string>
            <bool>false</bool>
           </property>
           <property name="default">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="flat">
            <bool>false</bool>
@@ -265,7 +237,7 @@ background-color: rgb(255, 255, 255);</string>
            <bool>false</bool>
           </property>
           <property name="flat">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -295,7 +267,7 @@ background-color: rgb(255, 255, 255);</string>
            <string>Change Save Location</string>
           </property>
           <property name="flat">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
          </widget>
         </item>

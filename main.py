@@ -53,11 +53,10 @@ class MainUiWindow(QMainWindow):
             radio_button_state = "raw official audio"
         elif self.select_clean_audio.isChecked():
             radio_button_state = "radio edit clean audio"
-
         self.update_label.setText('Searching...')
         # default_loc = func.get_os_downloads_folder() + '/Youtube/'  # Default folder
         download_location = self.download_location_label.text()[19:]
-        print(download_location)
+        # print(download_location)
         download_info = self.youtube_single_download(self.searchtube(self.link.text(), radio_button_state),
                                                      download_location)
         self.update_label.setText(download_info[0])
@@ -65,6 +64,7 @@ class MainUiWindow(QMainWindow):
         song_info = download_info[2]
         try:
             func.rename_file(file_path)  # remove the word downloaded 11 characters, its the title so i add mp4
+
         except Exception as e:
             print(str(e))
 
