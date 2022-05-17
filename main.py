@@ -43,10 +43,10 @@ class MainUiWindow(QMainWindow):
         self.change_location_button.clicked.connect(self.download_location_picker)
 
     def do_downloads_threaded(self): # this is ran from a threaded call made by the download button. 0_o
-        radio_button_state = "radio edit clean audio"
         if self.link.text() == '':
             self.update_label.setText("ERROR - Please enter a song name and artiste")
             return
+
         if self.select_audio.isChecked():
             radio_button_state = "official audio"
         elif self.select_raw_audio.isChecked():
@@ -56,12 +56,13 @@ class MainUiWindow(QMainWindow):
         self.update_label.setText('Searching...')
         # default_loc = func.get_os_downloads_folder() + '/Youtube/'  # Default folder
         download_location = self.download_location_label.text()[19:]
-        # print(download_location)
+        print('just before download')
         download_info = self.youtube_single_download(self.searchtube(self.link.text(), radio_button_state),
                                                      download_location)
         self.update_label.setText(download_info[0])
         file_path = download_info[1]
         song_info = download_info[2]
+        print('before rename')
         try:
             func.rename_file(file_path)  # remove the word downloaded 11 characters, its the title so i add mp4
 
@@ -75,6 +76,7 @@ class MainUiWindow(QMainWindow):
     def download_clicked(self):
         executer = ThreadPoolExecutor(max_workers=3)          # I need to make a tutorial
         t = executer.submit(self.do_downloads_threaded)
+        print('here')
     ################################################
 
     def open_folder_clicked(self):
@@ -140,21 +142,23 @@ class MainUiWindow(QMainWindow):
         if not link:
             self.update_label.setText('Error - no song specified or song downloaded already')
             return
-        # print('single download func ran')
+        print('single download func ran')
         yt = YouTube(link[0])
         # print(f'single download func debug 2 {yt}')
         yt.streams.filter(only_audio=True)
         self.update_label.setText('Starting download...')
         stream = yt.streams.get_by_itag(140)
+        func.ensure_dir_exist(op)
         file_path = stream.download(output_path=op)
         self.update_label.setText('Download complete')
         info_list = [yt.title, file_path, yt.vid_info]
+        print('download finished')
         return info_list
 
     def searchtube(self, txt, radio_button_state):
         if txt == '':
             return []
-        # print('search func ran')
+        print('search func ran')
         self.update_label.setText('Searching for your song...')
         video_list = []
         s = Search(f'{txt} {radio_button_state}')

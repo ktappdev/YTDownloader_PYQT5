@@ -10,6 +10,10 @@ def resource_path(
         return os.path.join(sys._MEIPASS, relative_path)
     return os.path.join(os.path.abspath("."), relative_path)
 
+def ensure_dir_exist(file_path):
+    directory = os.path.dirname(file_path)
+    if not os.path.exists(directory):
+        os.makedirs(directory)
 
 def rename_file(
         song_path):  # This is my ver own rename function, not sure if this is how everyong does it but it works for me
