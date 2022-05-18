@@ -21,7 +21,7 @@ ssl._create_default_https_context = ssl._create_unverified_context  # important 
 
 class Worker(QObject):
     finished = pyqtSignal()
-    progress = pyqtSignal(int)
+    progress = pyqtSignal(str)
 
     def run(self):
         """Download task"""
@@ -38,10 +38,11 @@ class Worker(QObject):
         # mainuiwindow.update_label.setText('Searching....')
         # default_loc = func.get_os_downloads_folder() + '/Youtube/'  # Default folder
         download_location = mainuiwindow.download_location_label.text()[19:]
-        print('just before download')
+        self.progress.emit('song found, beginning download')
         download_info = mainuiwindow.youtube_single_download(
             mainuiwindow.searchtube(mainuiwindow.link.text(), mainuiwindow.radio_button_state),
             download_location)
+        self.progress.emit('Download complete')
         # mainuiwindow.update_label.setText(download_info[0])
         file_path = download_info[1]
         song_info = download_info[2]
@@ -54,7 +55,7 @@ class Worker(QObject):
 
         mainuiwindow.link.setText("")
         mainuiwindow.download_button.disabled = False
-
+        self.progress.emit(f'Downloaded - {download_info[0]}')
         self.finished.emit()
 
 
@@ -112,9 +113,7 @@ class MainUiWindow(QMainWindow):
         self.thread.finished.connect(
             lambda: self.download_button.setEnabled(True)
         )
-        self.thread.finished.connect(
-            lambda: self.update_label.setText("Long-Running Step: 0")
-        )
+
 
     ################################################
 
