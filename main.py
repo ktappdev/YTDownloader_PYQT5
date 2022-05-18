@@ -1,4 +1,7 @@
 from concurrent.futures import ThreadPoolExecutor
+
+from PyQt5.QtCore import QObject, QThread, pyqtSignal
+import PyQt5.QtCore
 from pytube import YouTube
 from pytube import Search
 from pytube import Playlist
@@ -15,10 +18,51 @@ import ssl
 
 ssl._create_default_https_context = ssl._create_unverified_context  # important used to make internet coms legit - windows issue
 
+class Worker(QObject):
+    finished = pyqtSignal()
+    progress = pyqtSignal(int)
+
+    def run(self):
+        """Download task"""
+        if mainuiwindow.link.text() == '':
+            mainuiwindow.update_label.setText("ERROR - Please enter a song name and artiste")
+            return
+
+        if mainuiwindow.select_audio.isChecked():
+            mainuiwindow.radio_button_state = "official audio"
+        elif mainuiwindow.select_raw_audio.isChecked():
+            mainuiwindow.radio_button_state = "raw official audio"
+        elif mainuiwindow.select_clean_audio.isChecked():
+            mainuiwindow.radio_button_state = "radio edit clean audio"
+        # mainuiwindow.update_label.setText('Searching....')
+        # default_loc = func.get_os_downloads_folder() + '/Youtube/'  # Default folder
+        download_location = mainuiwindow.download_location_label.text()[19:]
+        print('just before download')
+        download_info = mainuiwindow.youtube_single_download(mainuiwindow.searchtube(mainuiwindow.link.text(), mainuiwindow.radio_button_state),
+                                                     download_location)
+        # mainuiwindow.update_label.setText(download_info[0])
+        file_path = download_info[1]
+        song_info = download_info[2]
+        print('before rename')
+        try:
+            func.rename_file(file_path)  # remove the word downloaded 11 characters, its the title so i add mp4
+
+        except Exception as e:
+            print(str(e))
+
+        mainuiwindow.link.setText("")
+        mainuiwindow.download_button.disabled = False
+
+        self.finished.emit()
+
+
 
 class MainUiWindow(QMainWindow):
     def __init__(self):
         super(MainUiWindow, self).__init__()
+
+        self.thread = None
+        self.worker = None
         uic.loadUi("MainUiWindow.ui", self)
         self.download_button = self.findChild(QPushButton, "download_button")
         self.update_label = self.findChild(QLabel, "update_label")
@@ -43,40 +87,34 @@ class MainUiWindow(QMainWindow):
         self.download_list_button.clicked.connect(self.open_folder_clicked)
         self.change_location_button.clicked.connect(self.download_location_picker)
 
-    def do_downloads_threaded(self): # this is ran from a threaded call made by the download button. 0_o
-        if self.link.text() == '':
-            self.update_label.setText("ERROR - Please enter a song name and artiste")
-            return
-
-        if self.select_audio.isChecked():
-            self.radio_button_state = "official audio"
-        elif self.select_raw_audio.isChecked():
-            self.radio_button_state = "raw official audio"
-        elif self.select_clean_audio.isChecked():
-            self.radio_button_state = "radio edit clean audio"
-        self.update_label.setText('Searching....')
-        # default_loc = func.get_os_downloads_folder() + '/Youtube/'  # Default folder
-        download_location = self.download_location_label.text()[19:]
-        print('just before download')
-        download_info = self.youtube_single_download(self.searchtube(self.link.text(), self.radio_button_state),
-                                                     download_location)
-        self.update_label.setText(download_info[0])
-        file_path = download_info[1]
-        song_info = download_info[2]
-        print('before rename')
-        try:
-            func.rename_file(file_path)  # remove the word downloaded 11 characters, its the title so i add mp4
-
-        except Exception as e:
-            print(str(e))
-
-        self.link.setText("")
-        self.download_button.disabled = False
+    def reportProgress(self, n):
+        self.update_label.setText('stuff')
 
     ################################################
     def download_clicked(self):
-        executer = ThreadPoolExecutor(max_workers=3)          # I need to make a tutorial
-        t = executer.submit(self.do_downloads_threaded)
+        # Step 2: Create a QThread object
+        self.thread = QThread()
+        # Step 3: Create a worker object
+        self.worker = Worker()
+        # Step 4: Move worker to the thread
+        self.worker.moveToThread(self.thread)
+        # Step 5: Connect signals and slots
+        self.thread.started.connect(self.worker.run)
+        self.worker.finished.connect(self.thread.quit)
+        self.worker.finished.connect(self.worker.deleteLater)
+        self.thread.finished.connect(self.thread.deleteLater)
+        self.worker.progress.connect(self.reportProgress)
+        # Step 6: Start the thread
+        self.thread.start()
+
+        # Final resets
+        self.download_button.setEnabled(False)
+        self.thread.finished.connect(
+            lambda: self.download_button.setEnabled(True)
+        )
+        self.thread.finished.connect(
+            lambda: self.update_label.setText("Long-Running Step: 0")
+        )
     ################################################
 
     def open_folder_clicked(self):
