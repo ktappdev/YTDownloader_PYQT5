@@ -22,6 +22,7 @@ ssl._create_default_https_context = ssl._create_unverified_context  # important 
 class Worker(QObject):
     finished = pyqtSignal()
     progress = pyqtSignal(str)
+    # resetSearchBox = pyqtSignal(x=x+1)
 
     def run(self):
         """Download task"""
@@ -38,11 +39,36 @@ class Worker(QObject):
         # mainuiwindow.update_label.setText('Searching....')
         # default_loc = func.get_os_downloads_folder() + '/Youtube/'  # Default folder
         download_location = mainuiwindow.download_location_label.text()[19:]
-        self.progress.emit('song found, beginning download')
-        download_info = mainuiwindow.youtube_single_download(
-            mainuiwindow.searchtube(mainuiwindow.link.text(), mainuiwindow.radio_button_state),
-            download_location)
+        # download_info = mainuiwindow.youtube_single_download(mainuiwindow.searchtube(mainuiwindow.link.text(), mainuiwindow.radio_button_state), download_location)
+
+        #########SERACH
+        txt = mainuiwindow.link.text()
+        radio_button_state = mainuiwindow.radio_button_state
+        video_list = []
+        self.progress.emit(f'Searching for {txt}')
+        s = Search(f'{txt} {radio_button_state}')
+        for obj in s.results:
+            x = str(
+                obj)  # in the future see if theyy have an easier way to use these youtube obj in search results. I doubt what i'm doing is the easy way lol
+            video_id = x[x.rfind('=') + 1:].strip('>')
+            video_url = f'https://www.youtube.com/watch?v={video_id}'
+            video_list.append(video_url)
+
+        ############## DOWNLOAD
+        link = video_list[0]
+        yt = YouTube(link)
+        # print(f'single download func debug 2 {yt}')
+        self.progress.emit('Filtering songs')
+        yt.streams.filter(only_audio=True)
+        # self.update_label.setText('Starting download...')
+        stream = yt.streams.get_by_itag(140)
+        func.ensure_dir_exist(download_location)
+        self.progress.emit('Downloading...')
+        file_path = stream.download(output_path=download_location)
+        # self.update_label.setText('Download complete')
+        download_info = [yt.title, file_path, yt.vid_info]
         self.progress.emit('Download complete')
+
         # mainuiwindow.update_label.setText(download_info[0])
         file_path = download_info[1]
         song_info = download_info[2]
@@ -53,8 +79,8 @@ class Worker(QObject):
         except Exception as e:
             print(str(e))
 
-        mainuiwindow.link.setText("")
-        mainuiwindow.download_button.disabled = False
+        # mainuiwindow.link.setText("")
+        # mainuiwindow.download_button.disabled = False
         self.progress.emit(f'Downloaded - {download_info[0]}')
         self.finished.emit()
 
@@ -91,6 +117,10 @@ class MainUiWindow(QMainWindow):
     def reportProgress(self, s):
         self.update_label.setText(s)
 
+    def resetSearchBoxfunc(self):
+        print('clear box')
+        self.link.clear()
+
     ################################################
     def download_clicked(self):
         # Step 2: Create a QThread object
@@ -105,6 +135,7 @@ class MainUiWindow(QMainWindow):
         self.worker.finished.connect(self.worker.deleteLater)
         self.thread.finished.connect(self.thread.deleteLater)
         self.worker.progress.connect(self.reportProgress)
+        # self.worker.resetSearchBox.connect(self.resetSearchBoxfunc)
         # Step 6: Start the thread
         self.thread.start()
 
@@ -113,7 +144,9 @@ class MainUiWindow(QMainWindow):
         self.thread.finished.connect(
             lambda: self.download_button.setEnabled(True)
         )
-
+        self.thread.finished.connect(
+            lambda: self.link.clear()
+        )
 
     ################################################
 

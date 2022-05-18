@@ -66,8 +66,23 @@
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
        <item>
         <widget class="QLineEdit" name="link">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>50</height>
+          </size>
+         </property>
          <property name="font">
           <font>
            <family>Arial</family>
@@ -79,14 +94,13 @@
          </property>
          <property name="styleSheet">
           <string notr="true">border: 1px solid white;
-color: rgb(181, 184, 184);
+gridline-color: rgb(255, 85, 0);
+
+color: rgb(0, 0, 0);
 background-color: rgb(255, 255, 255);</string>
          </property>
          <property name="maxLength">
-          <number>40</number>
-         </property>
-         <property name="frame">
-          <bool>true</bool>
+          <number>100</number>
          </property>
          <property name="placeholderText">
           <string>Enter artiste and song name</string>
@@ -121,14 +135,13 @@ background-color: rgb(255, 255, 255);</string>
            </font>
           </property>
           <property name="styleSheet">
-           <string notr="true">background-color: rgb(233, 0, 9);
-color: rgb(250, 255, 255);</string>
+           <string notr="true"/>
           </property>
           <property name="text">
            <string>Download List</string>
           </property>
           <property name="default">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
           <property name="flat">
            <bool>false</bool>
@@ -152,8 +165,7 @@ color: rgb(250, 255, 255);</string>
            </font>
           </property>
           <property name="styleSheet">
-           <string notr="true">color: rgb(255, 255, 255);
-background-color: rgb(233, 0, 9);</string>
+           <string notr="true"/>
           </property>
           <property name="text">
            <string>Download Audio</string>
@@ -162,7 +174,7 @@ background-color: rgb(233, 0, 9);</string>
            <bool>false</bool>
           </property>
           <property name="default">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
           <property name="flat">
            <bool>false</bool>
@@ -174,6 +186,18 @@ background-color: rgb(233, 0, 9);</string>
      </item>
      <item>
       <widget class="QWidget" name="widget" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>20</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>30</height>
+        </size>
+       </property>
        <layout class="QHBoxLayout" name="_2">
         <property name="spacing">
          <number>0</number>
@@ -289,7 +313,7 @@ background-color: rgb(233, 0, 9);</string>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0.498, y2:0.0113636, stop:0 rgba(176, 176, 176, 255), stop:1 rgba(238, 238, 238, 214));</string>
+     <string notr="true"/>
     </property>
     <property name="text">
      <string notr="true"/>
@@ -344,15 +368,18 @@ background-color: rgb(233, 0, 9);</string>
     <property name="autoFillBackground">
      <bool>true</bool>
     </property>
-    <property name="styleSheet">
-     <string notr="true"/>
+    <property name="tabPosition">
+     <enum>QTabWidget::North</enum>
+    </property>
+    <property name="tabShape">
+     <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
      <number>0</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
-      <string>Clean/ Raw</string>
+      <string>Clean / Raw</string>
      </attribute>
      <widget class="QRadioButton" name="select_audio">
       <property name="geometry">
@@ -367,7 +394,7 @@ background-color: rgb(233, 0, 9);</string>
        <string notr="true"/>
       </property>
       <property name="text">
-       <string>Official Audio [raw/clean]</string>
+       <string>Disable</string>
       </property>
      </widget>
      <widget class="QRadioButton" name="select_raw_audio">
