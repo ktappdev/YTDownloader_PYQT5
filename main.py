@@ -18,6 +18,7 @@ import ssl
 
 ssl._create_default_https_context = ssl._create_unverified_context  # important used to make internet coms legit - windows issue
 
+
 class Worker(QObject):
     finished = pyqtSignal()
     progress = pyqtSignal(int)
@@ -38,8 +39,9 @@ class Worker(QObject):
         # default_loc = func.get_os_downloads_folder() + '/Youtube/'  # Default folder
         download_location = mainuiwindow.download_location_label.text()[19:]
         print('just before download')
-        download_info = mainuiwindow.youtube_single_download(mainuiwindow.searchtube(mainuiwindow.link.text(), mainuiwindow.radio_button_state),
-                                                     download_location)
+        download_info = mainuiwindow.youtube_single_download(
+            mainuiwindow.searchtube(mainuiwindow.link.text(), mainuiwindow.radio_button_state),
+            download_location)
         # mainuiwindow.update_label.setText(download_info[0])
         file_path = download_info[1]
         song_info = download_info[2]
@@ -54,7 +56,6 @@ class Worker(QObject):
         mainuiwindow.download_button.disabled = False
 
         self.finished.emit()
-
 
 
 class MainUiWindow(QMainWindow):
@@ -78,7 +79,6 @@ class MainUiWindow(QMainWindow):
         self.download_location_label = self.findChild(QLabel, "download_location_label")
         self.radio_button_state = "radio edit clean audio"
 
-
         # Actions
         self.download_location_label.setText(f'Download Location: {func.get_os_downloads_folder()}\\Youtube\\')
         self.download_button.clicked.connect(self.download_clicked)
@@ -87,8 +87,8 @@ class MainUiWindow(QMainWindow):
         self.download_list_button.clicked.connect(self.open_folder_clicked)
         self.change_location_button.clicked.connect(self.download_location_picker)
 
-    def reportProgress(self, n):
-        self.update_label.setText('stuff')
+    def reportProgress(self, s):
+        self.update_label.setText(s)
 
     ################################################
     def download_clicked(self):
@@ -115,6 +115,7 @@ class MainUiWindow(QMainWindow):
         self.thread.finished.connect(
             lambda: self.update_label.setText("Long-Running Step: 0")
         )
+
     ################################################
 
     def open_folder_clicked(self):
@@ -178,17 +179,17 @@ class MainUiWindow(QMainWindow):
 
     def youtube_single_download(self, link, op):
         if not link:
-            self.update_label.setText('Error - no song specified or song downloaded already')
+            # self.update_label.setText('Error - no song specified or song downloaded already')
             return
         print('single download func ran')
         yt = YouTube(link[0])
         # print(f'single download func debug 2 {yt}')
         yt.streams.filter(only_audio=True)
-        self.update_label.setText('Starting download...')
+        # self.update_label.setText('Starting download...')
         stream = yt.streams.get_by_itag(140)
         func.ensure_dir_exist(op)
         file_path = stream.download(output_path=op)
-        self.update_label.setText('Download complete')
+        # self.update_label.setText('Download complete')
         info_list = [yt.title, file_path, yt.vid_info]
         print('download finished')
         return info_list
@@ -197,7 +198,7 @@ class MainUiWindow(QMainWindow):
         if txt == '':
             return []
         print('search func ran')
-        self.update_label.setText('Searching for your song...')
+        # self.update_label.setText('Searching for your song...')
         video_list = []
         s = Search(f'{txt} {radio_button_state}')
         for obj in s.results:
@@ -206,8 +207,8 @@ class MainUiWindow(QMainWindow):
             video_id = x[x.rfind('=') + 1:].strip('>')
             video_url = f'https://www.youtube.com/watch?v={video_id}'
             video_list.append(video_url)
-            self.update_label.setText('getting list of matching audio')
-        self.update_label.setText('Search complete - Starting download')
+            # self.update_label.setText('getting list of matching audio')
+        # self.update_label.setText('Search complete - Starting download')
         return video_list
 
     def download_youtube_playlist(self):
