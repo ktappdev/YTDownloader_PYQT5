@@ -292,8 +292,8 @@ if __name__ == "__main__":
     icon = QtGui.QIcon()
     icon.addPixmap(QtGui.QPixmap("icon.ico"), QtGui.QIcon.Selected, QtGui.QIcon.On)
     mainuiwindow.setWindowIcon(icon)
-    mainuiwindow.setFixedWidth(491)
-    mainuiwindow.setFixedHeight(386)
+    mainuiwindow.setFixedWidth(630)
+    mainuiwindow.setFixedHeight(340)
     mainuiwindow.show()
     try:
         sys.exit(app.exec())
