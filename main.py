@@ -53,13 +53,15 @@ class Worker(QObject):
             video_list.append(video_url)
         ############## DOWNLOAD
 
-        link = video_list[0]
-        yt = YouTube(link)
+        # link = video_list[0]
+        yt = YouTube(video_list[0])
+        if 'TTRR' in yt.title:
+            yt = YouTube(video_list[1])
         # print(f'single download func debug 2 {yt}')
         self.progress.emit('Filtering songs')
         yt.streams.filter(only_audio=True)
         # self.update_label.setText('Starting download...')
-        stream = yt.streams.get_by_itag(140)
+        stream = yt.streams.get_audio_only()
         func.ensure_dir_exist(download_location)
         self.progress.emit('Downloading...')
         # mainuiwindow.pb.setValue(10)
