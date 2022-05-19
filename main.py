@@ -23,14 +23,11 @@ class Worker(QObject):
     finished = pyqtSignal()
     progress = pyqtSignal(str)
     pb = pyqtSignal(int)
-
     def run(self):
-
         """Download task"""
         if mainuiwindow.link.text() == '':
             mainuiwindow.update_label.setText("ERROR - Please enter a song name and artiste")
             return
-
         if mainuiwindow.select_audio.isChecked():
             mainuiwindow.radio_button_state = "official audio"
         elif mainuiwindow.select_raw_audio.isChecked():
@@ -54,7 +51,6 @@ class Worker(QObject):
             video_id = x[x.rfind('=') + 1:].strip('>')
             video_url = f'https://www.youtube.com/watch?v={video_id}'
             video_list.append(video_url)
-
         ############## DOWNLOAD
 
         link = video_list[0]
@@ -292,8 +288,8 @@ if __name__ == "__main__":
     icon = QtGui.QIcon()
     icon.addPixmap(QtGui.QPixmap("icon.ico"), QtGui.QIcon.Selected, QtGui.QIcon.On)
     mainuiwindow.setWindowIcon(icon)
-    mainuiwindow.setFixedWidth(630)
-    mainuiwindow.setFixedHeight(340)
+    mainuiwindow.setFixedWidth(624)
+    mainuiwindow.setFixedHeight(360)
     mainuiwindow.show()
     try:
         sys.exit(app.exec())
