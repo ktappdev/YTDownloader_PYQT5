@@ -7,7 +7,7 @@ from pytube import Search
 from pytube import Playlist
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QLineEdit, QRadioButton, QFileDialog, \
-    QProgressBar
+    QProgressBar, QMessageBox
 # from PyQt5.QtWidgets import *
 from PyQt5 import uic, QtGui
 import os
@@ -66,12 +66,12 @@ class Worker(QObject):
         stream = yt.streams.get_by_itag(140)
         func.ensure_dir_exist(download_location)
         self.progress.emit('Downloading...')
-        mainuiwindow.pb.setValue(10)
+        # mainuiwindow.pb.setValue(10)
         file_path = stream.download(output_path=download_location)
         # self.update_label.setText('Download complete')
         download_info = [yt.title, file_path, yt.vid_info]
         self.progress.emit('Download complete')
-        mainuiwindow.pb.setValue(80)
+        # mainuiwindow.pb.setValue(80)
 
         # mainuiwindow.update_label.setText(download_info[0])
         file_path = download_info[1]
@@ -81,7 +81,7 @@ class Worker(QObject):
 
         except Exception as e:
             print(str(e))
-        mainuiwindow.pb.setValue(100)
+        # mainuiwindow.pb.setValue(100)
 
         # mainuiwindow.link.setText("")
         # mainuiwindow.download_button.disabled = False
@@ -101,7 +101,8 @@ class MainUiWindow(QMainWindow):
         self.open_folder = self.findChild(QPushButton, "open_folder")
         self.op_input = self.findChild(QLineEdit, "op_input")
         self.link = self.findChild(QLineEdit, "link")
-        self.pb = self.findChild(QProgressBar, 'progressBar')
+        self.link.returnPressed.connect(self.download_clicked)
+        # self.pb = self.findChild(QProgressBar, 'progressBar')
         self.select_audio = self.findChild(QRadioButton, "select_audio")
         self.select_raw_audio = self.findChild(QRadioButton, "select_raw_audio")
         self.select_clean_audio = self.findChild(QRadioButton, "select_clean_audio")
@@ -125,12 +126,15 @@ class MainUiWindow(QMainWindow):
         print('clear box')
         self.link.clear()
 
-    def inc_progressbox(self, n):
-        self.pb.setValue(n)
+    # def inc_progressbox(self, n):
+    #     self.pb.setValue(n)
 
 
     ################################################
     def download_clicked(self):
+        if mainuiwindow.link.text() == '':
+            QMessageBox.about(self, "Error", "Please enter song and artiste name")
+            return
         # Step 2: Create a QThread object
         self.thread = QThread()
         # Step 3: Create a worker object
@@ -143,17 +147,21 @@ class MainUiWindow(QMainWindow):
         self.worker.finished.connect(self.worker.deleteLater)
         self.thread.finished.connect(self.thread.deleteLater)
         self.worker.progress.connect(self.reportProgress)
-        self.worker.pb.connect(self.inc_progressbox)
+        # self.worker.pb.connect(self.inc_progressbox)
         # Step 6: Start the thread
         self.thread.start()
 
         # Final resets
         self.download_button.setEnabled(False)
+        self.link.setEnabled(False)
         self.thread.finished.connect(
             lambda: self.download_button.setEnabled(True)
         )
         self.thread.finished.connect(
             lambda: self.link.clear()
+        )
+        self.thread.finished.connect(
+            lambda: self.link.setEnabled(True)
         )
 
     ################################################
