@@ -50,7 +50,7 @@
      <rect>
       <x>11</x>
       <y>11</y>
-      <width>291</width>
+      <width>211</width>
       <height>89</height>
      </rect>
     </property>
@@ -234,9 +234,6 @@ gridline-color: rgb(255, 85, 0);
 
 color: rgb(0, 0, 0);
 background-color: rgb(255, 255, 255);</string>
-           </property>
-           <property name="maxLength">
-            <number>100</number>
            </property>
            <property name="placeholderText">
             <string>Enter artiste and song name</string>
