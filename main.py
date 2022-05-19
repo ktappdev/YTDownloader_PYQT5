@@ -22,9 +22,10 @@ ssl._create_default_https_context = ssl._create_unverified_context  # important 
 class Worker(QObject):
     finished = pyqtSignal()
     progress = pyqtSignal(str)
-    # resetSearchBox = pyqtSignal(x=x+1)
+    pb = pyqtSignal(int)
 
     def run(self):
+
         """Download task"""
         if mainuiwindow.link.text() == '':
             mainuiwindow.update_label.setText("ERROR - Please enter a song name and artiste")
@@ -45,7 +46,7 @@ class Worker(QObject):
         txt = mainuiwindow.link.text()
         radio_button_state = mainuiwindow.radio_button_state
         video_list = []
-        self.progress.emit(f'Searching for {txt}')
+        self.progress.emit(f'Searching for - {txt}')
         s = Search(f'{txt} {radio_button_state}')
         for obj in s.results:
             x = str(
@@ -55,6 +56,7 @@ class Worker(QObject):
             video_list.append(video_url)
 
         ############## DOWNLOAD
+
         link = video_list[0]
         yt = YouTube(link)
         # print(f'single download func debug 2 {yt}')
@@ -64,20 +66,22 @@ class Worker(QObject):
         stream = yt.streams.get_by_itag(140)
         func.ensure_dir_exist(download_location)
         self.progress.emit('Downloading...')
+        mainuiwindow.pb.setValue(10)
         file_path = stream.download(output_path=download_location)
         # self.update_label.setText('Download complete')
         download_info = [yt.title, file_path, yt.vid_info]
         self.progress.emit('Download complete')
+        mainuiwindow.pb.setValue(80)
 
         # mainuiwindow.update_label.setText(download_info[0])
         file_path = download_info[1]
         song_info = download_info[2]
-        print('before rename')
         try:
             func.rename_file(file_path)  # remove the word downloaded 11 characters, its the title so i add mp4
 
         except Exception as e:
             print(str(e))
+        mainuiwindow.pb.setValue(100)
 
         # mainuiwindow.link.setText("")
         # mainuiwindow.download_button.disabled = False
@@ -97,7 +101,7 @@ class MainUiWindow(QMainWindow):
         self.open_folder = self.findChild(QPushButton, "open_folder")
         self.op_input = self.findChild(QLineEdit, "op_input")
         self.link = self.findChild(QLineEdit, "link")
-        self.progress_bar = self.findChild(QProgressBar, 'progressBar')
+        self.pb = self.findChild(QProgressBar, 'progressBar')
         self.select_audio = self.findChild(QRadioButton, "select_audio")
         self.select_raw_audio = self.findChild(QRadioButton, "select_raw_audio")
         self.select_clean_audio = self.findChild(QRadioButton, "select_clean_audio")
@@ -121,6 +125,10 @@ class MainUiWindow(QMainWindow):
         print('clear box')
         self.link.clear()
 
+    def inc_progressbox(self, n):
+        self.pb.setValue(n)
+
+
     ################################################
     def download_clicked(self):
         # Step 2: Create a QThread object
@@ -135,7 +143,7 @@ class MainUiWindow(QMainWindow):
         self.worker.finished.connect(self.worker.deleteLater)
         self.thread.finished.connect(self.thread.deleteLater)
         self.worker.progress.connect(self.reportProgress)
-        # self.worker.resetSearchBox.connect(self.resetSearchBoxfunc)
+        self.worker.pb.connect(self.inc_progressbox)
         # Step 6: Start the thread
         self.thread.start()
 
@@ -273,15 +281,12 @@ class MainUiWindow(QMainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     mainuiwindow = MainUiWindow()
-
     icon = QtGui.QIcon()
     icon.addPixmap(QtGui.QPixmap("icon.ico"), QtGui.QIcon.Selected, QtGui.QIcon.On)
     mainuiwindow.setWindowIcon(icon)
-
     mainuiwindow.setFixedWidth(491)
     mainuiwindow.setFixedHeight(386)
     mainuiwindow.show()
-
     try:
         sys.exit(app.exec())
     except Exception as e:

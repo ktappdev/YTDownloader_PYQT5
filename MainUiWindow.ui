@@ -64,6 +64,31 @@
        </property>
       </widget>
      </item>
+     <item alignment="Qt::AlignHCenter">
+      <widget class="QProgressBar" name="progressBar">
+       <property name="minimumSize">
+        <size>
+         <width>300</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>300</width>
+         <height>10</height>
+        </size>
+       </property>
+       <property name="value">
+        <number>0</number>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="format">
+        <string>%p%</string>
+       </property>
+      </widget>
+     </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_4">
        <property name="spacing">
@@ -214,7 +239,7 @@ background-color: rgb(255, 255, 255);</string>
           </property>
          </widget>
         </item>
-        <item alignment="Qt::AlignLeft">
+        <item alignment="Qt::AlignHCenter">
          <widget class="QPushButton" name="open_folder">
           <property name="font">
            <font>
@@ -238,7 +263,7 @@ background-color: rgb(255, 255, 255);</string>
           </property>
          </widget>
         </item>
-        <item alignment="Qt::AlignLeft">
+        <item alignment="Qt::AlignHCenter">
          <widget class="QPushButton" name="change_location_button">
           <property name="font">
            <font>
