@@ -20,19 +20,17 @@ ssl._create_default_https_context = ssl._create_unverified_context  # important 
 class Worker(QObject):
     finished = pyqtSignal()
     progress = pyqtSignal(str)
-    pb = pyqtSignal(int)
 
     def run(self):
         download_location = mainuiwindow.download_location_label.text()[19:]
         """Download task"""
         if mainuiwindow.link.text() == '':
-
             mainuiwindow.update_label.setText("ERROR - Please enter a song name and artiste")
             return
-
+        #################### Youtube URL detection #####################
         list_of_urls_ = read_urls_from_search_box(mainuiwindow.link.text())
         if list_of_urls_:
-            self.progress.emit(f'found {len(list_of_urls_)} youtube urls')
+            self.progress.emit(f'Found {len(list_of_urls_)} youtube urls, Downloading...')
             for link in list_of_urls_:
                 # print(link)
                 down_inf = youtube_single_download(link, download_location)
@@ -47,8 +45,7 @@ class Worker(QObject):
         elif mainuiwindow.select_clean_audio.isChecked():
             mainuiwindow.radio_button_state = "radio edit clean audio"
 
-
-        #########SERACH
+        ################## SERACH
         txt = mainuiwindow.link.text()
         radio_button_state = mainuiwindow.radio_button_state
         video_list = []
@@ -66,7 +63,8 @@ class Worker(QObject):
         if 'TTRR' in yt.title:
             yt = YouTube(video_list[1])
         self.progress.emit('Filtering songs')
-        yt.streams.filter(only_audio=True)
+        # yt.streams.filter(only_audio=True)
+        # stream = yt.streams.get_by_itag(251)
         stream = yt.streams.get_audio_only()
         func.ensure_dir_exist(download_location)
         self.progress.emit('Downloading...')

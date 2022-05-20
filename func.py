@@ -15,10 +15,12 @@ def ensure_dir_exist(file_path):
     if not os.path.exists(directory):
         os.makedirs(directory)
 
-def rename_file(
-        song_path):  # This is my ver own rename function, not sure if this is how everyong does it but it works for me
+def rename_file(song_path):  # This is my ver own rename function, not sure if this is how everyong does it but it works for me
     # print(song_path)
-    new_file = song_path.replace('.mp4', '.mp3')  # A simple replace
+    if '.mp4' in song_path:
+        new_file = song_path.replace('.mp4', '.mp3')  # A simple replace
+    elif '.webm. in song_path':
+        new_file = song_path.replace('.webm', '.mp3')  # A simple replace
     os.rename(song_path, new_file)
 
 
