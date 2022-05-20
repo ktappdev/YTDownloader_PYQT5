@@ -13,7 +13,7 @@ import subprocess
 import func
 import ssl
 
-ssl._create_default_https_context = ssl._create_unverified_context  # important used to make internet coms legit - windows issue
+ssl._create_default_https_context = ssl._create_unverified_context
 
 
 
@@ -22,7 +22,7 @@ class Worker(QObject):
     finished = pyqtSignal()
     progress = pyqtSignal(str)
     def run(self):
-        download_location = mainuiwindow.download_location_label.text()[19:]
+        download_location = mainuiwindow.download_location_label.text()
         """Download task"""
         if mainuiwindow.link.text() == '':
             mainuiwindow.update_label.setText("ERROR - Please enter a song name and artiste")
@@ -36,6 +36,7 @@ class Worker(QObject):
                 down_inf = youtube_single_download(link, download_location)
                 self.progress.emit(f'Downloaded - {down_inf[0]}')
             self.finished.emit()
+            # End URL Detection on the single download page
             return
         if mainuiwindow.select_audio.isChecked():
             mainuiwindow.radio_button_state = "official audio"
@@ -44,7 +45,7 @@ class Worker(QObject):
         elif mainuiwindow.select_clean_audio.isChecked():
             mainuiwindow.radio_button_state = "radio edit clean audio"
 
-        ################## SERACH
+        ################## youtube SERACH
         txt = mainuiwindow.link.text()
         radio_button_state = mainuiwindow.radio_button_state
         video_list = []
@@ -52,11 +53,11 @@ class Worker(QObject):
         s = Search(f'{txt} {radio_button_state}')
         for obj in s.results[:2]:
             x = str(
-                obj)  # in the future see if theyy have an easier way to use these youtube obj in search results. I doubt what i'm doing is the easy way lol
+                obj)
             video_id = x[x.rfind('=') + 1:].strip('>')
             video_url = f'https://www.youtube.com/watch?v={video_id}'
             video_list.append(video_url)
-        ############## DOWNLOAD
+        ############## youtube single DOWNLOAD
         yt = YouTube(video_list[0])
         if 'TTRR' in yt.title:
             yt = YouTube(video_list[1])
@@ -70,7 +71,7 @@ class Worker(QObject):
         file_path = download_info[1]
         song_info = download_info[2]
         try:
-            func.rename_file(file_path)  # remove the word downloaded 11 characters, its the title so i add mp4
+            func.rename_file(file_path)
         except Exception as e:
             print(str(e))
         self.progress.emit(f'Downloaded - {download_info[0]}')
@@ -78,13 +79,16 @@ class Worker(QObject):
 
 
 
-class Worker2(QObject):
+class Worker2(QObject): # Second Thread
     finished = pyqtSignal()
-    progress = pyqtSignal(int)
-    progress_str = pyqtSignal(str)
+    progress = pyqtSignal(int) #for Progress bar on multi page
+    progress_str = pyqtSignal(str) # for label on multi page
 
     def run(self):
-        download_location = mainuiwindow.download_location_label.text()[19:]
+        txt = mainuiwindow.link_multi.text().split("\n")
+        print(txt)
+        return
+        download_location = mainuiwindow.download_location_label_multi.text()
         """Download task"""
         if mainuiwindow.link.text() == '':
             mainuiwindow.update_label.setText("ERROR - Please enter a song name and artiste")
@@ -94,7 +98,6 @@ class Worker2(QObject):
         if list_of_urls_:
             self.progress.emit(f'Found {len(list_of_urls_)} youtube urls, Downloading...')
             for link in list_of_urls_:
-                # print(link)
                 down_inf = youtube_single_download(link, download_location)
                 self.progress.emit(f'Downloaded - {down_inf[0]}')
             self.finished.emit()
@@ -146,8 +149,7 @@ def youtube_single_download(link, op):
     if link == []:
         return
     yt = YouTube(
-        link)  # not sure whay i does remove this indexing thing but i suspect its for thwee playlisting to work... after 2 weeks im lost when the program gcrashes lol i need to handle this better asap
-    # print(f'single download func debug 2 {yt}')
+        link)
     yt.streams.filter(only_audio=True)
     stream = yt.streams.get_audio_only()
     file_path = stream.download(output_path=op)
@@ -174,7 +176,7 @@ class MainUiWindow(QMainWindow):
         self.open_folder_multi = self.findChild(QPushButton, "open_folder_multi")
         self.op_input = self.findChild(QLineEdit, "op_input")
         self.link = self.findChild(QLineEdit, "link")
-        self.link.returnPressed.connect(self.download_clicked)
+        self.link_multi = self.findChild(QLineEdit, "link_multi")
         self.select_audio = self.findChild(QRadioButton, "select_audio")
         self.select_raw_audio = self.findChild(QRadioButton, "select_raw_audio")
         self.select_clean_audio = self.findChild(QRadioButton, "select_clean_audio")
@@ -186,12 +188,14 @@ class MainUiWindow(QMainWindow):
         self.radio_button_state = "radio edit clean audio"
 
         # Actions
-        self.download_location_label.setText(f'Download Location: {func.get_os_downloads_folder()}/Youtube/')
+        self.link.returnPressed.connect(self.download_clicked)
+        # self.link_multi.returnPressed.connect(self.download_list_clicked)
+        self.download_location_label.setText(f'{func.get_os_downloads_folder()}/Youtube/')
         self.download_location_label_multi.setText(f'{func.get_os_downloads_folder()}/Youtube/Multi')
         self.download_button.clicked.connect(self.download_clicked)
+        self.download_list_button.clicked.connect(self.download_list_clicked)
         self.open_folder.clicked.connect(lambda: self.open_folder_clicked('single'))
         self.open_folder_multi.clicked.connect(lambda: self.open_folder_clicked('multi'))
-        self.download_list_button.clicked.connect(self.open_folder_clicked)
         self.change_location_button.clicked.connect(lambda: self.download_location_picker('single'))
         self.change_location_button_multi.clicked.connect(lambda: self.download_location_picker('multi'))
 
@@ -242,7 +246,46 @@ class MainUiWindow(QMainWindow):
             lambda: self.link.setEnabled(True)
         )
 
+
+
+
+
+    #########################This triggers the Worker2 Thread#######################
+    def download_list_clicked(self):
+        print('hehe')
+        if mainuiwindow.link_multi.text() == '':
+            QMessageBox.about(self, "Error", "List is empty")
+            return
+
+        self.thread2 = QThread()
+
+        self.worker2 = Worker2()
+
+        self.worker2.moveToThread(self.thread2)
+
+        self.thread2.started.connect(self.worker2.run)
+        self.worker2.finished.connect(self.thread2.quit)
+        self.worker2.finished.connect(self.worker2.deleteLater)
+        self.thread2.finished.connect(self.thread2.deleteLater)
+        self.worker2.progress.connect(self.reportProgress)
+        self.thread2.start()
+
+        # Final resets
+        self.download_list_button.setEnabled(False)
+        self.link_multi.setEnabled(False)
+        self.thread2.finished.connect(
+            lambda: self.download_list_button.setEnabled(True)
+        )
+        self.thread2.finished.connect(
+            lambda: self.link_multi.clear()
+        )
+        self.thread2.finished.connect(
+            lambda: self.link_multi.setEnabled(True)
+        )
+
     ################################################
+
+
 
     def open_folder_clicked(self, btn):
         if btn == 'single':
