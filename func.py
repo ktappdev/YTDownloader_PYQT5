@@ -5,7 +5,10 @@ from pathlib import Path
 import re
 
 
-def read_urls_from_search_box(search_box_contents):
+def read_urls_from_search_box(search_box_contents, which_box):
+    if which_box == 'multi':
+        return
+
     REXP2 = r'(?:https?:\/\/)?(?:www\.)?youtu\.?be(?:\.com)?\/?.*(?:watch|embed)?(?:.*v=|v\/|\/)([\w\-_]+)\&?'
     list_of_urls = []
     try:

@@ -28,7 +28,7 @@ class Worker(QObject):
             mainuiwindow.update_label.setText("ERROR - Please enter a song name and artiste")
             return
         #################### Youtube URL detection #####################
-        list_of_urls_ = func.read_urls_from_search_box(mainuiwindow.link.text())
+        list_of_urls_ = func.read_urls_from_search_box(mainuiwindow.link.text(), 'single')
         if list_of_urls_:
             self.progress.emit(f'Found {len(list_of_urls_)} youtube urls, Downloading...')
             for link in list_of_urls_:
@@ -79,27 +79,28 @@ class Worker(QObject):
 
 
 
+
+
+
+
+
 class Worker2(QObject): # Second Thread
     finished = pyqtSignal()
     progress = pyqtSignal(int) #for Progress bar on multi page
-    progress_str = pyqtSignal(str) # for label on multi page
+    progress_multi = pyqtSignal(str) # for label on multi page
 
     def run(self):
         txt = mainuiwindow.link_multi.toPlainText().split("\n")
         print(txt)
         return
         download_location = mainuiwindow.download_location_label_multi.text()
-        """Download task"""
-        if mainuiwindow.link.text() == '':
-            mainuiwindow.update_label.setText("ERROR - Please enter a song name and artiste")
-            return
         #################### Youtube URL detection #####################
-        list_of_urls_ = func.read_urls_from_search_box(mainuiwindow.link.text())
+        list_of_urls_ = func.read_urls_from_search_box(mainuiwindow.link_multi.toPlainText(), 'multi')
         if list_of_urls_:
             self.progress.emit(f'Found {len(list_of_urls_)} youtube urls, Downloading...')
             for link in list_of_urls_:
                 down_inf = youtube_single_download(link, download_location)
-                self.progress.emit(f'Downloaded - {down_inf[0]}')
+                self.progress_multi.emit(f'Downloaded - {down_inf[0]}')
             self.finished.emit()
             return
         if mainuiwindow.select_audio.isChecked():
@@ -202,6 +203,9 @@ class MainUiWindow(QMainWindow):
     def reportProgress(self, s):
         self.update_label.setText(s)
 
+    def reportProgress_multi(self, s):
+        self.update_label_multi.setText(s)
+
     def resetSearchBoxfunc(self):
         self.link.clear()
 
@@ -268,7 +272,7 @@ class MainUiWindow(QMainWindow):
         self.worker2.finished.connect(self.thread2.quit)
         self.worker2.finished.connect(self.worker2.deleteLater)
         self.thread2.finished.connect(self.thread2.deleteLater)
-        self.worker2.progress.connect(self.reportProgress)
+        self.worker2.progress_multi.connect(self.reportProgress_multi)
         print('about to start')
         self.thread2.start()
         print('after started')

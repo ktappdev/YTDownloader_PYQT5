@@ -534,7 +534,7 @@ color: rgb(255, 255, 255);</string>
        </item>
       </layout>
      </widget>
-     <widget class="QLabel" name="updates_label_Multi">
+     <widget class="QLabel" name="update_label_Multi">
       <property name="geometry">
        <rect>
         <x>280</x>
