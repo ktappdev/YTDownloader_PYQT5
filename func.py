@@ -2,7 +2,7 @@ import os
 import sys
 from sys import platform
 from pathlib import Path
-
+import re
 
 
 def read_urls_from_search_box(search_box_contents):

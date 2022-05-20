@@ -1,4 +1,3 @@
-import re
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 import PyQt5.QtCore
 from pytube import YouTube
@@ -49,7 +48,7 @@ class Worker(QObject):
         video_list = []
         self.progress.emit(f'Searching for - {txt}')
         s = Search(f'{txt} {radio_button_state}')
-        for obj in s.results:
+        for obj in s.results[:2]:
             x = str(
                 obj)  # in the future see if theyy have an easier way to use these youtube obj in search results. I doubt what i'm doing is the easy way lol
             video_id = x[x.rfind('=') + 1:].strip('>')
@@ -106,6 +105,7 @@ class MainUiWindow(QMainWindow):
         self.download_button = self.findChild(QPushButton, "download_button")
         self.update_label = self.findChild(QLabel, "update_label")
         self.open_folder = self.findChild(QPushButton, "open_folder")
+        self.open_folder_multi = self.findChild(QPushButton, "open_folder_multi")
         self.op_input = self.findChild(QLineEdit, "op_input")
         self.link = self.findChild(QLineEdit, "link")
         self.link.returnPressed.connect(self.download_clicked)
@@ -114,15 +114,20 @@ class MainUiWindow(QMainWindow):
         self.select_clean_audio = self.findChild(QRadioButton, "select_clean_audio")
         self.download_list_button = self.findChild(QPushButton, "download_list_button")
         self.change_location_button = self.findChild(QPushButton, "change_location_button")
+        self.change_location_button_multi = self.findChild(QPushButton, "change_location_button_multi")
         self.download_location_label = self.findChild(QLabel, "download_location_label")
+        self.download_location_label_multi = self.findChild(QLabel, "download_location_label_multi")
         self.radio_button_state = "radio edit clean audio"
 
         # Actions
         self.download_location_label.setText(f'Download Location: {func.get_os_downloads_folder()}/Youtube/')
+        self.download_location_label_multi.setText(f'{func.get_os_downloads_folder()}/Youtube/Multi')
         self.download_button.clicked.connect(self.download_clicked)
-        self.open_folder.clicked.connect(self.open_folder_clicked)
+        self.open_folder.clicked.connect(lambda: self.open_folder_clicked('single'))
+        self.open_folder_multi.clicked.connect(lambda: self.open_folder_clicked('multi'))
         self.download_list_button.clicked.connect(self.open_folder_clicked)
-        self.change_location_button.clicked.connect(self.download_location_picker)
+        self.change_location_button.clicked.connect(lambda: self.download_location_picker('single'))
+        self.change_location_button_multi.clicked.connect(lambda: self.download_location_picker('multi'))
 
     def reportProgress(self, s):
         self.update_label.setText(s)
@@ -131,10 +136,14 @@ class MainUiWindow(QMainWindow):
         print('clear box')
         self.link.clear()
 
-    def download_location_picker(self):
+    def download_location_picker(self, lbl):
         user_location = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
-        self.download_location_label.setText(f'Download Location: {user_location}')
-        return user_location
+        if lbl == 'single':
+            self.download_location_label.setText(user_location)
+            return user_location
+        else:
+            self.download_location_label_multi.setText(user_location)
+            return user_location
 
     #########################This triggers the Worker Thread#######################
     def download_clicked(self):
@@ -170,8 +179,11 @@ class MainUiWindow(QMainWindow):
 
     ################################################
 
-    def open_folder_clicked(self):
-        path = self.download_location_label.text()[19:]
+    def open_folder_clicked(self, btn):
+        if btn == 'single':
+            path = self.download_location_label.text()[19:]
+        else:
+            path = self.download_location_label_multi.text()
         if platform == "win32":
             try:
                 os.startfile(path)
@@ -198,7 +210,7 @@ class MainUiWindow(QMainWindow):
         print(f'Playlist contains {len(playlist)} items')
         print('*' * 40)
         for url in playlist[:3]:
-            self.youtube_single_download(url)
+            self.func.youtube_single_download(url)
 
     def download_list_of_songs_from_file(self, list_of_songs):
         print('playlist from file func ran')
@@ -206,7 +218,7 @@ class MainUiWindow(QMainWindow):
         self.update_label.setText(f'File contains {len(list_of_songs)} songs')
         for song in list_of_songs:
             self.update_label.setText(f'Currently downloading song - {song}')
-            self.youtube_single_download(song)
+            self.func.youtube_single_download(song)
 
 
 if __name__ == "__main__":
