@@ -5,7 +5,7 @@ from pytube import Search
 from pytube import Playlist
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QLineEdit, QRadioButton, QFileDialog, \
-    QProgressBar, QMessageBox
+    QProgressBar, QMessageBox, QTextEdit
 from PyQt5 import uic, QtGui
 import os
 from sys import platform
@@ -85,7 +85,7 @@ class Worker2(QObject): # Second Thread
     progress_str = pyqtSignal(str) # for label on multi page
 
     def run(self):
-        txt = mainuiwindow.link_multi.text().split("\n")
+        txt = mainuiwindow.link_multi.toPlainText().split("\n")
         print(txt)
         return
         download_location = mainuiwindow.download_location_label_multi.text()
@@ -176,7 +176,7 @@ class MainUiWindow(QMainWindow):
         self.open_folder_multi = self.findChild(QPushButton, "open_folder_multi")
         self.op_input = self.findChild(QLineEdit, "op_input")
         self.link = self.findChild(QLineEdit, "link")
-        self.link_multi = self.findChild(QLineEdit, "link_multi")
+        self.link_multi = self.findChild(QTextEdit, "link_multi")
         self.select_audio = self.findChild(QRadioButton, "select_audio")
         self.select_raw_audio = self.findChild(QRadioButton, "select_raw_audio")
         self.select_clean_audio = self.findChild(QRadioButton, "select_clean_audio")
@@ -253,7 +253,6 @@ class MainUiWindow(QMainWindow):
     #########################This triggers the Worker2 Thread#######################
     def download_list_clicked(self):
         print(mainuiwindow.link_multi.toPlainText())
-
         if mainuiwindow.link_multi.toPlainText() == '':
             print('empty')
             QMessageBox.about(self, "Error", "List is empty")
@@ -264,14 +263,15 @@ class MainUiWindow(QMainWindow):
         self.worker2 = Worker2()
 
         self.worker2.moveToThread(self.thread2)
-
+        print('gass')
         self.thread2.started.connect(self.worker2.run)
         self.worker2.finished.connect(self.thread2.quit)
         self.worker2.finished.connect(self.worker2.deleteLater)
         self.thread2.finished.connect(self.thread2.deleteLater)
         self.worker2.progress.connect(self.reportProgress)
+        print('about to start')
         self.thread2.start()
-
+        print('after started')
         # Final resets
         self.download_list_button.setEnabled(False)
         self.link_multi.setEnabled(False)
