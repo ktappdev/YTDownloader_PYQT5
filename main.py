@@ -60,8 +60,6 @@ class Worker(QObject):
         if 'TTRR' in yt.title:
             yt = YouTube(video_list[1])
         self.progress.emit('Filtering songs')
-        # yt.streams.filter(only_audio=True)
-        # stream = yt.streams.get_by_itag(251)
         stream = yt.streams.get_audio_only()
         func.ensure_dir_exist(download_location)
         self.progress.emit('Downloading...')
@@ -133,7 +131,6 @@ class MainUiWindow(QMainWindow):
         self.update_label.setText(s)
 
     def resetSearchBoxfunc(self):
-        print('clear box')
         self.link.clear()
 
     def download_location_picker(self, lbl):

@@ -101,7 +101,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -178,7 +178,7 @@
      <string notr="true"/>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab_3">
      <attribute name="title">
@@ -535,9 +535,9 @@ color: rgb(255, 255, 255);</string>
       <property name="geometry">
        <rect>
         <x>280</x>
-        <y>110</y>
+        <y>150</y>
         <width>311</width>
-        <height>53</height>
+        <height>51</height>
        </rect>
       </property>
       <property name="frameShape">
@@ -550,11 +550,58 @@ color: rgb(255, 255, 255);</string>
        <bool>true</bool>
       </property>
      </widget>
+     <widget class="QWidget" name="verticalLayoutWidget_2">
+      <property name="geometry">
+       <rect>
+        <x>280</x>
+        <y>10</y>
+        <width>311</width>
+        <height>42</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <property name="spacing">
+        <number>1</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="label_3">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>15</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Downloading List</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QProgressBar" name="progressBar">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>15</height>
+          </size>
+         </property>
+         <property name="value">
+          <number>24</number>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
      <widget class="QPushButton" name="change_location_button_multi">
       <property name="geometry">
        <rect>
         <x>280</x>
-        <y>80</y>
+        <y>120</y>
         <width>75</width>
         <height>23</height>
        </rect>
@@ -583,10 +630,10 @@ color: rgb(255, 255, 255);</string>
      <widget class="QGroupBox" name="groupBox_2">
       <property name="geometry">
        <rect>
-        <x>281</x>
-        <y>11</y>
-        <width>309</width>
-        <height>61</height>
+        <x>280</x>
+        <y>60</y>
+        <width>311</width>
+        <height>60</height>
        </rect>
       </property>
       <property name="title">
@@ -619,7 +666,7 @@ color: rgb(255, 255, 255);</string>
         <enum>QFrame::NoFrame</enum>
        </property>
        <property name="text">
-        <string>Location:bfffffffffffffffffffffffffffffffffffffffffffffdfgbgfhjdrtnduvcrxryxnutmntbfvdytvcdytdbubdtncfffffffdzbzbzbbzbfzbfdbzfbzfbzbzbzbbzfz</string>
+        <string>Location</string>
        </property>
        <property name="scaledContents">
         <bool>true</bool>
@@ -636,7 +683,7 @@ color: rgb(255, 255, 255);</string>
       <property name="geometry">
        <rect>
         <x>360</x>
-        <y>80</y>
+        <y>120</y>
         <width>75</width>
         <height>23</height>
        </rect>
