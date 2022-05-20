@@ -34,12 +34,12 @@
      <rect>
       <x>-4</x>
       <y>-20</y>
-      <width>561</width>
+      <width>631</width>
       <height>451</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true"/>
+     <string notr="true">alternate-background-color: rgb(240, 240, 240);</string>
     </property>
     <property name="text">
      <string notr="true"/>
@@ -170,9 +170,12 @@
      <rect>
       <x>10</x>
       <y>110</y>
-      <width>605</width>
-      <height>241</height>
+      <width>601</width>
+      <height>240</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
     </property>
     <property name="currentIndex">
      <number>0</number>
@@ -240,11 +243,20 @@
            <property name="toolTip">
             <string>Enter song name and artiste</string>
            </property>
+           <property name="autoFillBackground">
+            <bool>false</bool>
+           </property>
            <property name="styleSheet">
-            <string notr="true"/>
+            <string notr="true">background-color: rgb(255, 255, 222);</string>
+           </property>
+           <property name="frame">
+            <bool>false</bool>
            </property>
            <property name="placeholderText">
             <string>Enter artiste and song name</string>
+           </property>
+           <property name="clearButtonEnabled">
+            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -264,14 +276,22 @@
            </property>
            <property name="font">
             <font>
-             <family>Arial</family>
-             <pointsize>15</pointsize>
+             <pointsize>-1</pointsize>
              <weight>75</weight>
+             <italic>false</italic>
              <bold>true</bold>
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true"/>
+            <string notr="true">
+background-color: rgb(233, 62, 48);
+    border-style: outset;
+    border-width: 2px;
+    border-radius: 10px;
+    border-color: beige;
+    font: bold 14px;
+    padding: 6px;
+color: rgb(255, 255, 255);</string>
            </property>
            <property name="text">
             <string>Download Audio</string>
@@ -445,14 +465,27 @@
      <widget class="QWidget" name="horizontalLayoutWidget">
       <property name="geometry">
        <rect>
-        <x>-1</x>
-        <y>-1</y>
-        <width>611</width>
-        <height>211</height>
+        <x>10</x>
+        <y>10</y>
+        <width>261</width>
+        <height>191</height>
        </rect>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <property name="spacing">
+        <number>5</number>
+       </property>
        <item>
+        <widget class="QTextEdit" name="textEdit">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(255, 255, 222);</string>
+         </property>
+         <property name="acceptRichText">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item alignment="Qt::AlignHCenter">
         <widget class="QPushButton" name="download_list_button">
          <property name="maximumSize">
           <size>
@@ -462,16 +495,25 @@
          </property>
          <property name="font">
           <font>
-           <family>Arial</family>
-           <weight>50</weight>
-           <bold>false</bold>
+           <pointsize>-1</pointsize>
+           <weight>75</weight>
+           <italic>false</italic>
+           <bold>true</bold>
           </font>
          </property>
          <property name="styleSheet">
-          <string notr="true"/>
+          <string notr="true">
+background-color: rgb(233, 62, 48);
+    border-style: outset;
+    border-width: 2px;
+    border-radius: 10px;
+    border-color: beige;
+    font: bold 14px;
+    padding: 6px;
+color: rgb(255, 255, 255);</string>
          </property>
          <property name="text">
-          <string>Select List Of Songs</string>
+          <string>Download</string>
          </property>
          <property name="default">
           <bool>false</bool>
@@ -482,6 +524,143 @@
         </widget>
        </item>
       </layout>
+     </widget>
+     <widget class="QWidget" name="verticalLayoutWidget_2">
+      <property name="geometry">
+       <rect>
+        <x>320</x>
+        <y>10</y>
+        <width>271</width>
+        <height>111</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="title">
+          <string>Download Location</string>
+         </property>
+         <widget class="QPushButton" name="change_location_button_2">
+          <property name="geometry">
+           <rect>
+            <x>100</x>
+            <y>50</y>
+            <width>75</width>
+            <height>23</height>
+           </rect>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>80</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Arial</family>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: rgb(67, 69, 69);</string>
+          </property>
+          <property name="text">
+           <string>Change</string>
+          </property>
+          <property name="flat">
+           <bool>false</bool>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="open_folder_2">
+          <property name="geometry">
+           <rect>
+            <x>100</x>
+            <y>80</y>
+            <width>75</width>
+            <height>23</height>
+           </rect>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>80</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Arial</family>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: rgb(67, 69, 69);</string>
+          </property>
+          <property name="text">
+           <string>Open</string>
+          </property>
+          <property name="autoDefault">
+           <bool>false</bool>
+          </property>
+          <property name="default">
+           <bool>false</bool>
+          </property>
+          <property name="flat">
+           <bool>false</bool>
+          </property>
+         </widget>
+         <widget class="QLabel" name="download_location_label_2">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>30</y>
+            <width>251</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>40</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <family>Arial</family>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: rgb(50, 50, 50);</string>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
+          </property>
+          <property name="text">
+           <string>Location:kusdhvzjkhakjdhvkjdshakjvhkjsvhkasjvhksjv</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QLabel" name="label_2">
+      <property name="geometry">
+       <rect>
+        <x>320</x>
+        <y>130</y>
+        <width>271</width>
+        <height>71</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Paste list of 'artiste name - song names' or Youtube links (Don't Mix), choose folder, choose clean or raw and hit download</string>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
      </widget>
     </widget>
    </widget>

@@ -4,6 +4,23 @@ from sys import platform
 from pathlib import Path
 
 
+
+def read_urls_from_search_box(search_box_contents):
+    REXP2 = r'(?:https?:\/\/)?(?:www\.)?youtu\.?be(?:\.com)?\/?.*(?:watch|embed)?(?:.*v=|v\/|\/)([\w\-_]+)\&?'
+    list_of_urls = []
+    try:
+        url = re.findall(REXP2, search_box_contents)
+        # print(url)
+        if not url:  # check if the current list is empty. this is insane to me right now lol, compared to how i was gonna check
+            return []
+        else:
+            for vid_code in url:
+                list_of_urls.append(f'https://www.youtube.com/watch?v={vid_code}')
+    except Exception as e:
+        print(e)
+    print(list_of_urls)
+    return list_of_urls
+
 def resource_path(
         relative_path):  # This function gets the absolute pathe of what ever you feed it, just so there is no location issue
     if hasattr(sys, '_MEIPASS'):

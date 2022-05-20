@@ -20,7 +20,6 @@ ssl._create_default_https_context = ssl._create_unverified_context  # important 
 class Worker(QObject):
     finished = pyqtSignal()
     progress = pyqtSignal(str)
-
     def run(self):
         download_location = mainuiwindow.download_location_label.text()[19:]
         """Download task"""
@@ -28,7 +27,7 @@ class Worker(QObject):
             mainuiwindow.update_label.setText("ERROR - Please enter a song name and artiste")
             return
         #################### Youtube URL detection #####################
-        list_of_urls_ = read_urls_from_search_box(mainuiwindow.link.text())
+        list_of_urls_ = func.read_urls_from_search_box(mainuiwindow.link.text())
         if list_of_urls_:
             self.progress.emit(f'Found {len(list_of_urls_)} youtube urls, Downloading...')
             for link in list_of_urls_:
@@ -37,7 +36,6 @@ class Worker(QObject):
                 self.progress.emit(f'Downloaded - {down_inf[0]}')
             self.finished.emit()
             return
-
         if mainuiwindow.select_audio.isChecked():
             mainuiwindow.radio_button_state = "official audio"
         elif mainuiwindow.select_raw_audio.isChecked():
@@ -98,30 +96,13 @@ def youtube_single_download(link, op):
     return download_info
 
 
-def read_urls_from_search_box(search_box_contents):
-    REXP2 = r'(?:https?:\/\/)?(?:www\.)?youtu\.?be(?:\.com)?\/?.*(?:watch|embed)?(?:.*v=|v\/|\/)([\w\-_]+)\&?'
-    list_of_urls = []
-    try:
-        url = re.findall(REXP2, search_box_contents)
-        # print(url)
-        if not url:  # check if the current list is empty. this is insane to me right now lol, compared to how i was gonna check
-            return []
-        else:
-            for vid_code in url:
-                list_of_urls.append(f'https://www.youtube.com/watch?v={vid_code}')
-    except Exception as e:
-        print(e)
-    print(list_of_urls)
-    return list_of_urls
-
-
 class MainUiWindow(QMainWindow):
     def __init__(self):
         super(MainUiWindow, self).__init__()
-
+        uic.loadUi("MainUiWindow.ui", self)
         self.thread = None
         self.worker = None
-        uic.loadUi("MainUiWindow.ui", self)
+
         self.download_button = self.findChild(QPushButton, "download_button")
         self.update_label = self.findChild(QLabel, "update_label")
         self.open_folder = self.findChild(QPushButton, "open_folder")
@@ -155,7 +136,7 @@ class MainUiWindow(QMainWindow):
         self.download_location_label.setText(f'Download Location: {user_location}')
         return user_location
 
-    ################################################
+    #########################This triggers the Worker Thread#######################
     def download_clicked(self):
         if mainuiwindow.link.text() == '':
             QMessageBox.about(self, "Error", "Please enter song and artiste name")
