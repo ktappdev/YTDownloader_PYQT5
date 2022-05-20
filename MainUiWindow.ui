@@ -270,65 +270,37 @@ background-color: rgb(255, 255, 255);</string>
         </layout>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox_2">
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>50</height>
-          </size>
+        <widget class="QLabel" name="update_label">
+         <property name="font">
+          <font>
+           <family>Arial</family>
+           <pointsize>12</pointsize>
+          </font>
          </property>
          <property name="styleSheet">
-          <string notr="true">background-color: rgb(240, 240, 240);</string>
+          <string notr="true"/>
          </property>
-         <property name="title">
-          <string>Progress</string>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
          </property>
-         <property name="alignment">
-          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         <property name="frameShadow">
+          <enum>QFrame::Plain</enum>
          </property>
-         <property name="flat">
+         <property name="lineWidth">
+          <number>0</number>
+         </property>
+         <property name="text">
+          <string>Enter song name and artiste in the search box</string>
+         </property>
+         <property name="scaledContents">
           <bool>false</bool>
          </property>
-         <widget class="QLabel" name="update_label">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>561</width>
-            <height>43</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <family>Arial</family>
-            <pointsize>10</pointsize>
-           </font>
-          </property>
-          <property name="styleSheet">
-           <string notr="true"/>
-          </property>
-          <property name="frameShape">
-           <enum>QFrame::NoFrame</enum>
-          </property>
-          <property name="frameShadow">
-           <enum>QFrame::Plain</enum>
-          </property>
-          <property name="lineWidth">
-           <number>0</number>
-          </property>
-          <property name="text">
-           <string>Enter song name and artiste in the search box</string>
-          </property>
-          <property name="scaledContents">
-           <bool>false</bool>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-          <property name="wordWrap">
-           <bool>false</bool>
-          </property>
-         </widget>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="wordWrap">
+          <bool>false</bool>
+         </property>
         </widget>
        </item>
        <item>
@@ -344,7 +316,7 @@ background-color: rgb(255, 255, 255);</string>
            <widget class="QPushButton" name="open_folder">
             <property name="maximumSize">
              <size>
-              <width>100</width>
+              <width>80</width>
               <height>16777215</height>
              </size>
             </property>
@@ -357,7 +329,7 @@ background-color: rgb(255, 255, 255);</string>
              <string notr="true">color: rgb(67, 69, 69);</string>
             </property>
             <property name="text">
-             <string>Open Folder</string>
+             <string>Open</string>
             </property>
             <property name="autoDefault">
              <bool>false</bool>
@@ -374,7 +346,7 @@ background-color: rgb(255, 255, 255);</string>
            <widget class="QPushButton" name="change_location_button">
             <property name="maximumSize">
              <size>
-              <width>100</width>
+              <width>80</width>
               <height>16777215</height>
              </size>
             </property>
@@ -387,7 +359,7 @@ background-color: rgb(255, 255, 255);</string>
              <string notr="true">color: rgb(67, 69, 69);</string>
             </property>
             <property name="text">
-             <string>Change Location</string>
+             <string>Change</string>
             </property>
             <property name="flat">
              <bool>false</bool>
@@ -408,10 +380,13 @@ background-color: rgb(255, 255, 255);</string>
              <enum>QFrame::NoFrame</enum>
             </property>
             <property name="text">
-             <string>Download Location:</string>
+             <string>Location:</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
             </property>
            </widget>
           </item>

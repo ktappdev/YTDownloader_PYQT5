@@ -26,6 +26,7 @@ class Worker(QObject):
         download_location = mainuiwindow.download_location_label.text()[19:]
         """Download task"""
         if mainuiwindow.link.text() == '':
+
             mainuiwindow.update_label.setText("ERROR - Please enter a song name and artiste")
             return
 
@@ -77,7 +78,6 @@ class Worker(QObject):
         song_info = download_info[2]
         try:
             func.rename_file(file_path)  # remove the word downloaded 11 characters, its the title so i add mp4
-
         except Exception as e:
             print(str(e))
         self.progress.emit(f'Downloaded - {download_info[0]}')
@@ -139,7 +139,7 @@ class MainUiWindow(QMainWindow):
         self.radio_button_state = "radio edit clean audio"
 
         # Actions
-        self.download_location_label.setText(f'Download Location: {func.get_os_downloads_folder()}\\Youtube\\')
+        self.download_location_label.setText(f'Download Location: {func.get_os_downloads_folder()}/Youtube/')
         self.download_button.clicked.connect(self.download_clicked)
         self.open_folder.clicked.connect(self.open_folder_clicked)
         self.download_list_button.clicked.connect(self.open_folder_clicked)
