@@ -28,12 +28,12 @@ class Worker(QObject):
         if mainuiwindow.link.text() == '':
             mainuiwindow.update_label.setText("ERROR - Please enter a song name and artiste")
             return
+
         list_of_urls_ = read_urls_from_search_box(mainuiwindow.link.text())
         if list_of_urls_:
             self.progress.emit(f'found {len(list_of_urls_)} youtube urls')
             for link in list_of_urls_:
-                print(link)
-                print(mainuiwindow.download_location_label.text())
+                # print(link)
                 down_inf = youtube_single_download(link, download_location)
                 self.progress.emit(f'Downloaded - {down_inf[0]}')
             self.finished.emit()
