@@ -57,8 +57,8 @@ class Worker(QObject):
             video_id = x[x.rfind('=') + 1:].strip('>')
             video_url = f'https://www.youtube.com/watch?v={video_id}'
             video_list.append(video_url)
-        ############## DOWNLOAD
 
+        ############## DOWNLOAD
         yt = YouTube(video_list[0])
         if 'TTRR' in yt.title:
             yt = YouTube(video_list[1])
@@ -71,7 +71,6 @@ class Worker(QObject):
         file_path = stream.download(output_path=download_location)
         download_info = [yt.title, file_path, yt.vid_info]
         self.progress.emit('Download complete')
-
         file_path = download_info[1]
         song_info = download_info[2]
         try:
@@ -81,14 +80,14 @@ class Worker(QObject):
         self.progress.emit(f'Downloaded - {download_info[0]}')
         self.finished.emit()
 
+
 def youtube_single_download(link, op):
     if link == []:
         return
-    # print('single download func ran')
-    yt = YouTube(link) # not sure whay i does remove this indexing thing but i suspect its for thwee playlisting to work... after 2 weeks im lost when the program gcrashes lol i need to handle this better asap
+    yt = YouTube(
+        link)  # not sure whay i does remove this indexing thing but i suspect its for thwee playlisting to work... after 2 weeks im lost when the program gcrashes lol i need to handle this better asap
     # print(f'single download func debug 2 {yt}')
     yt.streams.filter(only_audio=True)
-    # print("Starting download....")
     stream = yt.streams.get_audio_only()
     file_path = stream.download(output_path=op)
     download_info = [yt.title, file_path, yt.vid_info]
@@ -97,6 +96,7 @@ def youtube_single_download(link, op):
     except Exception as ex:
         print(str(e))
     return download_info
+
 
 def read_urls_from_search_box(search_box_contents):
     REXP2 = r'(?:https?:\/\/)?(?:www\.)?youtu\.?be(?:\.com)?\/?.*(?:watch|embed)?(?:.*v=|v\/|\/)([\w\-_]+)\&?'
