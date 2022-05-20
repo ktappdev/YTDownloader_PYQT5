@@ -483,6 +483,9 @@ color: rgb(255, 255, 255);</string>
        </property>
        <item>
         <widget class="QTextEdit" name="link_multi">
+         <property name="cursor" stdset="0">
+          <cursorShape>IBeamCursor</cursorShape>
+         </property>
          <property name="styleSheet">
           <string notr="true">background-color: rgb(255, 255, 222);</string>
          </property>

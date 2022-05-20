@@ -252,8 +252,10 @@ class MainUiWindow(QMainWindow):
 
     #########################This triggers the Worker2 Thread#######################
     def download_list_clicked(self):
-        print('hehe')
-        if mainuiwindow.link_multi.text() == '':
+        print(mainuiwindow.link_multi.toPlainText())
+
+        if mainuiwindow.link_multi.toPlainText() == '':
+            print('empty')
             QMessageBox.about(self, "Error", "List is empty")
             return
 
