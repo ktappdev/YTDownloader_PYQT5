@@ -16,6 +16,8 @@ import ssl
 ssl._create_default_https_context = ssl._create_unverified_context  # important used to make internet coms legit - windows issue
 
 
+
+
 class Worker(QObject):
     finished = pyqtSignal()
     progress = pyqtSignal(str)
@@ -54,6 +56,63 @@ class Worker(QObject):
             video_id = x[x.rfind('=') + 1:].strip('>')
             video_url = f'https://www.youtube.com/watch?v={video_id}'
             video_list.append(video_url)
+
+
+
+
+
+
+
+
+class Worker2(QObject):
+    finished = pyqtSignal()
+    progress = pyqtSignal(int)
+
+    def run(self):
+        download_location = mainuiwindow.download_location_label.text()[19:]
+        """Download task"""
+        if mainuiwindow.link.text() == '':
+            mainuiwindow.update_label.setText("ERROR - Please enter a song name and artiste")
+            return
+        #################### Youtube URL detection #####################
+        list_of_urls_ = func.read_urls_from_search_box(mainuiwindow.link.text())
+        if list_of_urls_:
+            self.progress.emit(f'Found {len(list_of_urls_)} youtube urls, Downloading...')
+            for link in list_of_urls_:
+                # print(link)
+                down_inf = youtube_single_download(link, download_location)
+                self.progress.emit(f'Downloaded - {down_inf[0]}')
+            self.finished.emit()
+            return
+        if mainuiwindow.select_audio.isChecked():
+            mainuiwindow.radio_button_state = "official audio"
+        elif mainuiwindow.select_raw_audio.isChecked():
+            mainuiwindow.radio_button_state = "raw official audio"
+        elif mainuiwindow.select_clean_audio.isChecked():
+            mainuiwindow.radio_button_state = "radio edit clean audio"
+
+        ################## SERACH
+        txt = mainuiwindow.link.text()
+        radio_button_state = mainuiwindow.radio_button_state
+        video_list = []
+        self.progress.emit(f'Searching for - {txt}')
+        s = Search(f'{txt} {radio_button_state}')
+        for obj in s.results[:2]:
+            x = str(
+                obj)  # in the future see if theyy have an easier way to use these youtube obj in search results. I doubt what i'm doing is the easy way lol
+            video_id = x[x.rfind('=') + 1:].strip('>')
+            video_url = f'https://www.youtube.com/watch?v={video_id}'
+            video_list.append(video_url)
+
+
+
+
+
+
+
+
+
+
 
         ############## DOWNLOAD
         yt = YouTube(video_list[0])
