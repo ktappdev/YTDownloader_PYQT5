@@ -56,17 +56,32 @@ class Worker(QObject):
             video_id = x[x.rfind('=') + 1:].strip('>')
             video_url = f'https://www.youtube.com/watch?v={video_id}'
             video_list.append(video_url)
-
-
-
-
-
+        ############## DOWNLOAD
+        yt = YouTube(video_list[0])
+        if 'TTRR' in yt.title:
+            yt = YouTube(video_list[1])
+        self.progress.emit('Filtering songs')
+        stream = yt.streams.get_audio_only()
+        func.ensure_dir_exist(download_location)
+        self.progress.emit('Downloading...')
+        file_path = stream.download(output_path=download_location)
+        download_info = [yt.title, file_path, yt.vid_info]
+        self.progress.emit('Download complete')
+        file_path = download_info[1]
+        song_info = download_info[2]
+        try:
+            func.rename_file(file_path)  # remove the word downloaded 11 characters, its the title so i add mp4
+        except Exception as e:
+            print(str(e))
+        self.progress.emit(f'Downloaded - {download_info[0]}')
+        self.finished.emit()
 
 
 
 class Worker2(QObject):
     finished = pyqtSignal()
     progress = pyqtSignal(int)
+    progress_str = pyqtSignal(str)
 
     def run(self):
         download_location = mainuiwindow.download_location_label.text()[19:]
@@ -103,36 +118,28 @@ class Worker2(QObject):
             video_id = x[x.rfind('=') + 1:].strip('>')
             video_url = f'https://www.youtube.com/watch?v={video_id}'
             video_list.append(video_url)
+            ############## DOWNLOAD
+            yt = YouTube(video_list[0])
+            if 'TTRR' in yt.title:
+                yt = YouTube(video_list[1])
+            self.progress.emit('Filtering songs')
+            stream = yt.streams.get_audio_only()
+            func.ensure_dir_exist(download_location)
+            self.progress.emit('Downloading...')
+            file_path = stream.download(output_path=download_location)
+            download_info = [yt.title, file_path, yt.vid_info]
+            self.progress.emit('Download complete')
+            file_path = download_info[1]
+            song_info = download_info[2]
+            try:
+                func.rename_file(file_path)  # remove the word downloaded 11 characters, its the title so i add mp4
+            except Exception as e:
+                print(str(e))
+            self.progress.emit(f'Downloaded - {download_info[0]}')
+            self.finished.emit()
 
 
 
-
-
-
-
-
-
-
-
-        ############## DOWNLOAD
-        yt = YouTube(video_list[0])
-        if 'TTRR' in yt.title:
-            yt = YouTube(video_list[1])
-        self.progress.emit('Filtering songs')
-        stream = yt.streams.get_audio_only()
-        func.ensure_dir_exist(download_location)
-        self.progress.emit('Downloading...')
-        file_path = stream.download(output_path=download_location)
-        download_info = [yt.title, file_path, yt.vid_info]
-        self.progress.emit('Download complete')
-        file_path = download_info[1]
-        song_info = download_info[2]
-        try:
-            func.rename_file(file_path)  # remove the word downloaded 11 characters, its the title so i add mp4
-        except Exception as e:
-            print(str(e))
-        self.progress.emit(f'Downloaded - {download_info[0]}')
-        self.finished.emit()
 
 
 def youtube_single_download(link, op):
@@ -157,7 +164,9 @@ class MainUiWindow(QMainWindow):
         super(MainUiWindow, self).__init__()
         uic.loadUi("MainUiWindow.ui", self)
         self.thread = None
+        self.thread2 = None
         self.worker = None
+        self.worker2 = None
 
         self.download_button = self.findChild(QPushButton, "download_button")
         self.update_label = self.findChild(QLabel, "update_label")
