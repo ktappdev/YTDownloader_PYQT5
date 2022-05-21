@@ -88,7 +88,6 @@ class Worker2(QObject):  # Second Thread
     def run(self):
         try:
             download_location = mainuiwindow.download_location_label_multi.text()
-
             #################### Youtube URL detection and download #####################
             list_of_urls_ = func.read_urls_from_search_box(mainuiwindow.link_multi.toPlainText())
             if list_of_urls_:
@@ -118,8 +117,8 @@ class Worker2(QObject):  # Second Thread
                     video_id = x[x.rfind('=') + 1:].strip('>')
                     video_url = f'https://www.youtube.com/watch?v={video_id}'
                     video_list.append(video_url)
-                ############## DOWNLOAD
 
+                ############## DOWNLOAD
                 # down_inf = youtube_single_download(video_list, download_location)
                 yt = YouTube(video_list[0])
                 if 'TTRR' in yt.title:

@@ -45,13 +45,6 @@ def ensure_dir_exist(file_path):
         os.makedirs(directory)
 
 
-def rename_file(song_path):
-    new_file = song_path.replace('.mp4', '.mp3')
-    if '.webm' in song_path:
-        new_file = song_path.replace('.webm', '.mp3')  # A simple replace
-    os.rename(song_path, new_file)
-    return new_file
-
 
 def get_os_downloads_folder():
     if platform == "linux" or platform == "linux2":
