@@ -1,8 +1,20 @@
 import os
+from moviepy.editor import *
+
 import sys
 from sys import platform
 from pathlib import Path
 import re
+
+
+def convert_rename_add_tags(mp4_path):
+    mp4_file = mp4_path
+    mp3_file = f'{mp4_path[:-4]}.mp3'
+    videoclip = AudioFileClip(mp4_file)
+    videoclip.write_audiofile(mp3_file)
+    videoclip.close()
+    os.remove(mp4_path)
+    return 'Convert complete'
 
 
 def read_urls_from_search_box(search_box_contents):

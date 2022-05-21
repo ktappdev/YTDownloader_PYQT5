@@ -67,10 +67,12 @@ class Worker(QObject):
         file_path = stream.download(output_path=download_location)
         download_info = [yt.title, file_path, yt.vid_info]
         self.progress.emit('Download complete')
-        song_name = download_info[1]
+        song_name = download_info[0]
         # song_info = download_info[2]
         try:
-            func.rename_file(file_path)
+            # func.rename_file(file_path)
+            self.progress.emit('Converting and adding tags')
+            func.convert_rename_add_tags(file_path)
         except Exception as e:
             print(str(e))
         self.progress.emit(f'Downloaded - {song_name}')
@@ -78,57 +80,75 @@ class Worker(QObject):
 
 
 class Worker2(QObject):  # Second Thread
+
     finished = pyqtSignal()
     progress_bar_multi = pyqtSignal(int)  # for Progress bar on multi page
     progress_multi = pyqtSignal(str)  # for label on multi page
 
     def run(self):
-        download_location = mainuiwindow.download_location_label_multi.text()
+        try:
+            download_location = mainuiwindow.download_location_label_multi.text()
 
-        #################### Youtube URL detection and download #####################
-        list_of_urls_ = func.read_urls_from_search_box(mainuiwindow.link_multi.toPlainText())
-        if list_of_urls_:
-            self.progress_multi.emit(f'Found {len(list_of_urls_)} youtube urls, Downloading...')
-            for link in list_of_urls_:
-                down_inf = youtube_single_download(link, download_location)
-                self.progress_multi.emit(f'Downloaded - {down_inf[0]}')
-            self.finished.emit()
-            return
-        ########## if there isn't any youtube link then its a text list ###########
-        if mainuiwindow.select_audio.isChecked():
-            mainuiwindow.radio_button_state = "official audio"
-        elif mainuiwindow.select_raw_audio.isChecked():
-            mainuiwindow.radio_button_state = "raw official audio"
-        elif mainuiwindow.select_clean_audio.isChecked():
-            mainuiwindow.radio_button_state = "radio edit clean audio"
+            #################### Youtube URL detection and download #####################
+            list_of_urls_ = func.read_urls_from_search_box(mainuiwindow.link_multi.toPlainText())
+            if list_of_urls_:
+                self.progress_multi.emit(f'Found {len(list_of_urls_)} youtube urls, Downloading...')
+                for link in list_of_urls_:
+                    down_inf = youtube_single_download(link, download_location)
+                    self.progress_multi.emit(f'Downloaded - {down_inf[0]}')
+                self.finished.emit()
+                return
+            ########## if there isn't any youtube link then its a text list ###########
+            if mainuiwindow.select_audio.isChecked():
+                mainuiwindow.radio_button_state = "official audio"
+            elif mainuiwindow.select_raw_audio.isChecked():
+                mainuiwindow.radio_button_state = "raw official audio"
+            elif mainuiwindow.select_clean_audio.isChecked():
+                mainuiwindow.radio_button_state = "radio edit clean audio"
 
-        ################## youtube SERACH
-        songs = mainuiwindow.link_multi.toPlainText().split("\n")
-        p = round(100 / len(songs))
-        video_list = []
-        for song in songs:
-            self.progress_multi.emit(f'Searching for - {song}')
-            s = Search(f'{song} {mainuiwindow.radio_button_state}')
-            for obj in s.results[:2]:
-                x = str(obj)
-                video_id = x[x.rfind('=') + 1:].strip('>')
-                video_url = f'https://www.youtube.com/watch?v={video_id}'
-                video_list.append(video_url)
-            ############## DOWNLOAD
-            self.progress_multi.emit('Filtering songs')
-            down_inf = youtube_single_download(video_list, download_location)
-            self.progress_multi.emit(f'Downloaded - {down_inf[0]}')
-            self.progress_bar_multi.emit(mainuiwindow.progress_bar_multi.value() + p)
-            self.progress_multi.emit('Download complete')
-            song_name = down_inf[0]
-            video_list.clear()
-            # song_info = download_info[2]
+            ################## youtube SERACH
+            songs = mainuiwindow.link_multi.toPlainText().split("\n")
+            p = round(100 / len(songs))
+            video_list = []
+            for song in songs:
+                self.progress_multi.emit(f'Searching for - {song}')
+                s = Search(f'{song} {mainuiwindow.radio_button_state}')
+                for obj in s.results[:2]:
+                    x = str(obj)
+                    video_id = x[x.rfind('=') + 1:].strip('>')
+                    video_url = f'https://www.youtube.com/watch?v={video_id}'
+                    video_list.append(video_url)
+                ############## DOWNLOAD
+
+                # down_inf = youtube_single_download(video_list, download_location)
+                yt = YouTube(video_list[0])
+                if 'TTRR' in yt.title:
+                    yt = YouTube(video_list[1])
+                # yt.streams.filter(only_audio=True)
+                stream = yt.streams.get_audio_only()
+                self.progress_multi.emit(f'Downloading...{yt.title}')
+                file_path = stream.download(output_path=download_location)
+                download_info = [yt.title, file_path, yt.vid_info]
+                try:
+                    # func.rename_file(file_path)
+                    self.progress_multi.emit('Converting, renaming and adding IDTags')
+                    func.convert_rename_add_tags(file_path)
+                except Exception as ex:
+                    print(ex)
+                self.progress_multi.emit(f'Downloaded - {download_info[0]}')
+                self.progress_bar_multi.emit(mainuiwindow.progress_bar_multi.value() + p)
+                self.progress_multi.emit('Download complete')
+                song_name = download_info[0]
+                video_list.clear()
+                # song_info = download_info[2]
+        except Exception as e:
+            print(e)
         self.progress_multi.emit(f'All downloads complete, ready for more!')
         self.progress_bar_multi.emit(0)
         self.finished.emit()
 
 
-def youtube_single_download(link, op):
+def youtube_single_download(link, op): #Using this for links still
     if link == []:
         return
     yt = YouTube(link[0])
@@ -139,7 +159,7 @@ def youtube_single_download(link, op):
     file_path = stream.download(output_path=op)
     download_info = [yt.title, file_path, yt.vid_info]
     try:
-        func.rename_file(file_path)  # remove the word downloaded 11 characters, its the title so i add mp4
+        func.convert_rename_add_tags(file_path)
     except Exception as ex:
         print(str(e))
     return download_info
