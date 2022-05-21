@@ -65,17 +65,15 @@ class Worker(QObject):
         func.ensure_dir_exist(download_location)
         self.progress.emit('Downloading...')
         file_path = stream.download(output_path=download_location)
-        print(file_path, 'first')
         download_info = [yt.title, file_path, yt.vid_info]
         self.progress.emit('Download complete')
-        file_path = download_info[1]
-        print(file_path, 'second')
-        song_info = download_info[2]
+        song_name = download_info[1]
+        # song_info = download_info[2]
         try:
             func.rename_file(file_path)
         except Exception as e:
             print(str(e))
-        self.progress.emit(f'Downloaded - {download_info[0]}')
+        self.progress.emit(f'Downloaded - {song_name}')
         self.finished.emit()
 
 
@@ -85,7 +83,6 @@ class Worker2(QObject):  # Second Thread
     progress_multi = pyqtSignal(str)  # for label on multi page
 
     def run(self):
-        download_info = []
         download_location = mainuiwindow.download_location_label_multi.text()
 
         #################### Youtube URL detection and download #####################
@@ -110,7 +107,6 @@ class Worker2(QObject):  # Second Thread
         p = round(100 / len(songs))
         video_list = []
         for song in songs:
-            file_path = ''
             self.progress_multi.emit(f'Searching for - {song}')
             s = Search(f'{song} {mainuiwindow.radio_button_state}')
             for obj in s.results[:2]:
@@ -118,35 +114,26 @@ class Worker2(QObject):  # Second Thread
                 video_id = x[x.rfind('=') + 1:].strip('>')
                 video_url = f'https://www.youtube.com/watch?v={video_id}'
                 video_list.append(video_url)
-                ############## DOWNLOAD
-                yt = YouTube(video_list[0])
-                if 'TTRR' in yt.title:
-                    yt = YouTube(video_list[1])
+            ############## DOWNLOAD
             self.progress_multi.emit('Filtering songs')
-            stream = yt.streams.get_audio_only()
-            func.ensure_dir_exist(download_location)
-            self.progress_multi.emit('Downloading...')
-            file_path = stream.download(output_path=download_location)
-            download_info = [yt.title, file_path, yt.vid_info]
+            down_inf = youtube_single_download(video_list, download_location)
+            self.progress_multi.emit(f'Downloaded - {down_inf[0]}')
             self.progress_bar_multi.emit(mainuiwindow.progress_bar_multi.value() + p)
             self.progress_multi.emit('Download complete')
-            song_name = download_info[0]
+            song_name = down_inf[0]
+            video_list.clear()
             # song_info = download_info[2]
-            try:
-                func.rename_file(file_path)
-
-            except Exception as e:
-                print(str(e))
-        self.progress_multi.emit(f'Downloaded - {song_name}')
-        self.progress_bar_multi.emit(100)
+        self.progress_multi.emit(f'All downloads complete, ready for more!')
+        self.progress_bar_multi.emit(0)
         self.finished.emit()
 
 
 def youtube_single_download(link, op):
     if link == []:
         return
-    yt = YouTube(
-        link)
+    yt = YouTube(link[0])
+    if 'TTRR' in yt.title:
+        yt = YouTube(link[1])
     yt.streams.filter(only_audio=True)
     stream = yt.streams.get_audio_only()
     file_path = stream.download(output_path=op)
