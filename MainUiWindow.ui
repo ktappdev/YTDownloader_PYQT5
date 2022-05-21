@@ -534,11 +534,11 @@ color: rgb(255, 255, 255);</string>
        </item>
       </layout>
      </widget>
-     <widget class="QLabel" name="update_label_Multi">
+     <widget class="QLabel" name="update_label_multi">
       <property name="geometry">
        <rect>
         <x>280</x>
-        <y>150</y>
+        <y>60</y>
         <width>311</width>
         <height>51</height>
        </rect>
@@ -589,7 +589,7 @@ color: rgb(255, 255, 255);</string>
         </widget>
        </item>
        <item>
-        <widget class="QProgressBar" name="progressBar_multi">
+        <widget class="QProgressBar" name="progress_bar_multi">
          <property name="enabled">
           <bool>true</bool>
          </property>
@@ -599,8 +599,11 @@ color: rgb(255, 255, 255);</string>
            <height>15</height>
           </size>
          </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
          <property name="value">
-          <number>24</number>
+          <number>0</number>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -613,7 +616,7 @@ color: rgb(255, 255, 255);</string>
       <property name="geometry">
        <rect>
         <x>280</x>
-        <y>120</y>
+        <y>178</y>
         <width>75</width>
         <height>23</height>
        </rect>
@@ -643,7 +646,7 @@ color: rgb(255, 255, 255);</string>
       <property name="geometry">
        <rect>
         <x>280</x>
-        <y>60</y>
+        <y>120</y>
         <width>311</width>
         <height>60</height>
        </rect>
@@ -657,7 +660,7 @@ color: rgb(255, 255, 255);</string>
          <x>10</x>
          <y>20</y>
          <width>291</width>
-         <height>40</height>
+         <height>31</height>
         </rect>
        </property>
        <property name="maximumSize">
@@ -695,7 +698,7 @@ color: rgb(255, 255, 255);</string>
       <property name="geometry">
        <rect>
         <x>360</x>
-        <y>120</y>
+        <y>178</y>
         <width>75</width>
         <height>23</height>
        </rect>

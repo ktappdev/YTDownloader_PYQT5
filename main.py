@@ -16,11 +16,10 @@ import ssl
 ssl._create_default_https_context = ssl._create_unverified_context
 
 
-
-
 class Worker(QObject):
     finished = pyqtSignal()
     progress = pyqtSignal(str)
+
     def run(self):
         download_location = mainuiwindow.download_location_label.text()
         """Download task"""
@@ -28,7 +27,7 @@ class Worker(QObject):
             mainuiwindow.update_label.setText("ERROR - Please enter a song name and artiste")
             return
         #################### Youtube URL detection #####################
-        list_of_urls_ = func.read_urls_from_search_box(mainuiwindow.link.text(), 'single')
+        list_of_urls_ = func.read_urls_from_search_box(mainuiwindow.link.text())
         if list_of_urls_:
             self.progress.emit(f'Found {len(list_of_urls_)} youtube urls, Downloading...')
             for link in list_of_urls_:
@@ -66,9 +65,11 @@ class Worker(QObject):
         func.ensure_dir_exist(download_location)
         self.progress.emit('Downloading...')
         file_path = stream.download(output_path=download_location)
+        print(file_path, 'first')
         download_info = [yt.title, file_path, yt.vid_info]
         self.progress.emit('Download complete')
         file_path = download_info[1]
+        print(file_path, 'second')
         song_info = download_info[2]
         try:
             func.rename_file(file_path)
@@ -78,31 +79,25 @@ class Worker(QObject):
         self.finished.emit()
 
 
-
-
-
-
-
-
-class Worker2(QObject): # Second Thread
+class Worker2(QObject):  # Second Thread
     finished = pyqtSignal()
-    progress = pyqtSignal(int) #for Progress bar on multi page
-    progress_multi = pyqtSignal(str) # for label on multi page
+    progress_bar_multi = pyqtSignal(int)  # for Progress bar on multi page
+    progress_multi = pyqtSignal(str)  # for label on multi page
 
     def run(self):
-        txt = mainuiwindow.link_multi.toPlainText().split("\n")
-        print(txt)
-        return
+        download_info = []
         download_location = mainuiwindow.download_location_label_multi.text()
-        #################### Youtube URL detection #####################
-        list_of_urls_ = func.read_urls_from_search_box(mainuiwindow.link_multi.toPlainText(), 'multi')
+
+        #################### Youtube URL detection and download #####################
+        list_of_urls_ = func.read_urls_from_search_box(mainuiwindow.link_multi.toPlainText())
         if list_of_urls_:
-            self.progress.emit(f'Found {len(list_of_urls_)} youtube urls, Downloading...')
+            self.progress_multi.emit(f'Found {len(list_of_urls_)} youtube urls, Downloading...')
             for link in list_of_urls_:
                 down_inf = youtube_single_download(link, download_location)
                 self.progress_multi.emit(f'Downloaded - {down_inf[0]}')
             self.finished.emit()
             return
+        ########## if there isn't any youtube link then its a text list ###########
         if mainuiwindow.select_audio.isChecked():
             mainuiwindow.radio_button_state = "official audio"
         elif mainuiwindow.select_raw_audio.isChecked():
@@ -110,40 +105,41 @@ class Worker2(QObject): # Second Thread
         elif mainuiwindow.select_clean_audio.isChecked():
             mainuiwindow.radio_button_state = "radio edit clean audio"
 
-        ################## SERACH
-        txt = mainuiwindow.link.text()
-        radio_button_state = mainuiwindow.radio_button_state
+        ################## youtube SERACH
+        songs = mainuiwindow.link_multi.toPlainText().split("\n")
+        p = round(100 / len(songs))
         video_list = []
-        self.progress.emit(f'Searching for - {txt}')
-        s = Search(f'{txt} {radio_button_state}')
-        for obj in s.results[:2]:
-            x = str(
-                obj)  # in the future see if theyy have an easier way to use these youtube obj in search results. I doubt what i'm doing is the easy way lol
-            video_id = x[x.rfind('=') + 1:].strip('>')
-            video_url = f'https://www.youtube.com/watch?v={video_id}'
-            video_list.append(video_url)
-            ############## DOWNLOAD
-            yt = YouTube(video_list[0])
-            if 'TTRR' in yt.title:
-                yt = YouTube(video_list[1])
-            self.progress.emit('Filtering songs')
+        for song in songs:
+            file_path = ''
+            self.progress_multi.emit(f'Searching for - {song}')
+            s = Search(f'{song} {mainuiwindow.radio_button_state}')
+            for obj in s.results[:2]:
+                x = str(obj)
+                video_id = x[x.rfind('=') + 1:].strip('>')
+                video_url = f'https://www.youtube.com/watch?v={video_id}'
+                video_list.append(video_url)
+                ############## DOWNLOAD
+                yt = YouTube(video_list[0])
+                if 'TTRR' in yt.title:
+                    yt = YouTube(video_list[1])
+            self.progress_multi.emit('Filtering songs')
             stream = yt.streams.get_audio_only()
             func.ensure_dir_exist(download_location)
-            self.progress.emit('Downloading...')
+            self.progress_multi.emit('Downloading...')
             file_path = stream.download(output_path=download_location)
             download_info = [yt.title, file_path, yt.vid_info]
-            self.progress.emit('Download complete')
-            file_path = download_info[1]
-            song_info = download_info[2]
+            self.progress_bar_multi.emit(mainuiwindow.progress_bar_multi.value() + p)
+            self.progress_multi.emit('Download complete')
+            song_name = download_info[0]
+            # song_info = download_info[2]
             try:
-                func.rename_file(file_path)  # remove the word downloaded 11 characters, its the title so i add mp4
+                func.rename_file(file_path)
+
             except Exception as e:
                 print(str(e))
-            self.progress.emit(f'Downloaded - {download_info[0]}')
-            self.finished.emit()
-
-
-
+        self.progress_multi.emit(f'Downloaded - {song_name}')
+        self.progress_bar_multi.emit(100)
+        self.finished.emit()
 
 
 def youtube_single_download(link, op):
@@ -173,6 +169,7 @@ class MainUiWindow(QMainWindow):
 
         self.download_button = self.findChild(QPushButton, "download_button")
         self.update_label = self.findChild(QLabel, "update_label")
+        self.update_label_multi = self.findChild(QLabel, "update_label_multi")
         self.open_folder = self.findChild(QPushButton, "open_folder")
         self.open_folder_multi = self.findChild(QPushButton, "open_folder_multi")
         self.op_input = self.findChild(QLineEdit, "op_input")
@@ -186,11 +183,11 @@ class MainUiWindow(QMainWindow):
         self.change_location_button_multi = self.findChild(QPushButton, "change_location_button_multi")
         self.download_location_label = self.findChild(QLabel, "download_location_label")
         self.download_location_label_multi = self.findChild(QLabel, "download_location_label_multi")
+        self.progress_bar_multi = self.findChild(QProgressBar, "progress_bar_multi")
         self.radio_button_state = "radio edit clean audio"
 
         # Actions
         self.link.returnPressed.connect(self.download_clicked)
-        # self.link_multi.returnPressed.connect(self.download_list_clicked)
         self.download_location_label.setText(f'{func.get_os_downloads_folder()}/Youtube/')
         self.download_location_label_multi.setText(f'{func.get_os_downloads_folder()}/Youtube/Multi')
         self.download_button.clicked.connect(self.download_clicked)
@@ -205,6 +202,9 @@ class MainUiWindow(QMainWindow):
 
     def reportProgress_multi(self, s):
         self.update_label_multi.setText(s)
+
+    def report_progress_bar_multi(self, s):
+        self.progress_bar_multi.setValue(s)
 
     def resetSearchBoxfunc(self):
         self.link.clear()
@@ -250,15 +250,9 @@ class MainUiWindow(QMainWindow):
             lambda: self.link.setEnabled(True)
         )
 
-
-
-
-
     #########################This triggers the Worker2 Thread#######################
     def download_list_clicked(self):
-        print(mainuiwindow.link_multi.toPlainText())
         if mainuiwindow.link_multi.toPlainText() == '':
-            print('empty')
             QMessageBox.about(self, "Error", "List is empty")
             return
 
@@ -273,6 +267,7 @@ class MainUiWindow(QMainWindow):
         self.worker2.finished.connect(self.worker2.deleteLater)
         self.thread2.finished.connect(self.thread2.deleteLater)
         self.worker2.progress_multi.connect(self.reportProgress_multi)
+        self.worker2.progress_bar_multi.connect(self.report_progress_bar_multi)
         print('about to start')
         self.thread2.start()
         print('after started')
@@ -291,11 +286,9 @@ class MainUiWindow(QMainWindow):
 
     ################################################
 
-
-
     def open_folder_clicked(self, btn):
         if btn == 'single':
-            path = self.download_location_label.text()[19:]
+            path = self.download_location_label.text()
         else:
             path = self.download_location_label_multi.text()
         if platform == "win32":
