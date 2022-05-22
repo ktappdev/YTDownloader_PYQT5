@@ -31,7 +31,7 @@ class Worker(QObject):
         if list_of_urls_:
             self.progress.emit(f'Found {len(list_of_urls_)} youtube urls, Downloading...')
             for link in list_of_urls_:
-                # print(link)
+                print(link)
                 down_inf = youtube_single_download(link, download_location)
                 self.progress.emit(f'Downloaded - {down_inf[0]}')
             self.finished.emit()
@@ -148,11 +148,11 @@ class Worker2(QObject):  # Second Thread for commit
 
 
 def youtube_single_download(link, op): #Using this for links still
-    if link == []:
+    if link == '':
         return
-    yt = YouTube(link[0])
-    if 'TTRR' in yt.title:
-        yt = YouTube(link[1])
+    yt = YouTube(link)
+    # if 'TTRR' in yt.title:
+    #     yt = YouTube(link[1])
     yt.streams.filter(only_audio=True)
     stream = yt.streams.get_audio_only()
     file_path = stream.download(output_path=op)
