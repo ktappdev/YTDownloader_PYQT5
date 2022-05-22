@@ -79,7 +79,7 @@ class Worker(QObject):
         self.finished.emit()
 
 
-class Worker2(QObject):  # Second Thread
+class Worker2(QObject):  # Second Thread for commit
 
     finished = pyqtSignal()
     progress_bar_multi = pyqtSignal(int)  # for Progress bar on multi page
