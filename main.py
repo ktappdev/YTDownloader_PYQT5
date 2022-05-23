@@ -80,13 +80,27 @@ class Worker(QObject):
 
 
 class Worker2(QObject):  # Second Thread for commit
-
     finished = pyqtSignal()
     progress_bar_multi = pyqtSignal(int)  # for Progress bar on multi page
     progress_multi = pyqtSignal(str)  # for label on multi page
 
     def run(self):
         try:
+            if not mainuiwindow.link_multi.toPlainText():
+                '''once the list box is empty and the download putton clicked 
+                open dialog chooser to get the csv file path
+                then parse it. for every song -  download - add tags, 
+                when finished call finish signal and return this function'''
+                mainuiwindow.csv_file_picker()
+                print('spotify baby')
+                self.progress_multi.emit(f'All downloads complete, ready for more!')
+                self.progress_bar_multi.emit(0)
+                self.finished.emit()
+                return
+
+
+
+
             download_location = mainuiwindow.download_location_label_multi.text()
             #################### Youtube URL detection and download #####################
             list_of_urls_ = func.read_urls_from_search_box(mainuiwindow.link_multi.toPlainText())
@@ -178,6 +192,7 @@ class MainUiWindow(QMainWindow):
         self.update_label_multi = self.findChild(QLabel, "update_label_multi")
         self.open_folder = self.findChild(QPushButton, "open_folder")
         self.open_folder_multi = self.findChild(QPushButton, "open_folder_multi")
+        self.spotify_button = self.findChild(QPushButton, "spotify_button")
         self.op_input = self.findChild(QLineEdit, "op_input")
         self.link = self.findChild(QLineEdit, "link")
         self.link_multi = self.findChild(QTextEdit, "link_multi")
@@ -202,6 +217,7 @@ class MainUiWindow(QMainWindow):
         self.open_folder_multi.clicked.connect(lambda: self.open_folder_clicked('multi'))
         self.change_location_button.clicked.connect(lambda: self.download_location_picker('single'))
         self.change_location_button_multi.clicked.connect(lambda: self.download_location_picker('multi'))
+        self.spotify_button.clicked.connect(lambda: self.csv_file_picker())
 
     def reportProgress(self, s):
         self.update_label.setText(s)
@@ -223,6 +239,10 @@ class MainUiWindow(QMainWindow):
         else:
             self.download_location_label_multi.setText(user_location)
             return user_location
+
+    def csv_file_picker(self):
+        csv_path = QFileDialog.getExistingDirectory(self)
+        return csv_path
 
     #########################This triggers the Worker Thread#######################
     def download_clicked(self):
@@ -259,24 +279,19 @@ class MainUiWindow(QMainWindow):
     #########################This triggers the Worker2 Thread#######################
     def download_list_clicked(self):
         if mainuiwindow.link_multi.toPlainText() == '':
-            QMessageBox.about(self, "Error", "List is empty")
-            return
+            QMessageBox.about(self, "Spotify Downloads", "Click ok to get csv file")
+
 
         self.thread2 = QThread()
-
         self.worker2 = Worker2()
-
         self.worker2.moveToThread(self.thread2)
-        print('gass')
         self.thread2.started.connect(self.worker2.run)
         self.worker2.finished.connect(self.thread2.quit)
         self.worker2.finished.connect(self.worker2.deleteLater)
         self.thread2.finished.connect(self.thread2.deleteLater)
         self.worker2.progress_multi.connect(self.reportProgress_multi)
         self.worker2.progress_bar_multi.connect(self.report_progress_bar_multi)
-        print('about to start')
         self.thread2.start()
-        print('after started')
         # Final resets
         self.download_list_button.setEnabled(False)
         self.link_multi.setEnabled(False)
@@ -347,3 +362,7 @@ if __name__ == "__main__":
         sys.exit(app.exec())
     except Exception as e:
         print(e)
+
+
+def spotify_downloader():
+    return None

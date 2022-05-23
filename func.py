@@ -1,13 +1,12 @@
 import os
 from moviepy.editor import *
-
 import sys
 from sys import platform
 from pathlib import Path
 import re
 
 
-def convert_rename_add_tags(mp4_path):
+def convert_rename_add_tags(mp4_path, tags=None):
     mp4_file = mp4_path
     mp3_file = f'{mp4_path[:-4]}.mp3'
     videoclip = AudioFileClip(mp4_file)
