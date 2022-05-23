@@ -103,12 +103,13 @@ class Worker2(QObject):  # Second Thread for commit
                     genre_index = header.index('Artist Genres')
                     album_release_date_index = header.index('Album Release Date')
                     energy_index = header.index('Energy')
-                    mode_index = header.index('Mode')
+                    mode_index = header.index('Mode') # not using since i don't understand the number system they use
                     tempo_index = header.index('Tempo')
 
                     video_list = []
                     download_location = mainuiwindow.download_location_label_multi.text()
                     for song in reader:
+                        '''these are the tags from the csv file'''
                         tags.append(song[artist_name_index])
                         tags.append(song[song_name_index])
                         tags.append(song[album_name_index])
@@ -145,15 +146,16 @@ class Worker2(QObject):  # Second Thread for commit
                             video_list.clear()
                         except Exception as ex:
                             print(ex)
-                    f.close()
+                    # f.close()
                 download_location = None
                 # print(global_csv_file_path)
                 self.progress_multi.emit(f'All downloads complete, ready for more!')
                 self.progress_bar_multi.emit(0)
                 self.finished.emit()
-                return
+                return # End of spotify operations
 
-
+            '''This is the text box operations - can enter multiple youtube links or 
+            multiple song name and artiste on new lines'''
 
 
             download_location = mainuiwindow.download_location_label_multi.text()

@@ -268,36 +268,37 @@
            <property name="minimumSize">
             <size>
              <width>0</width>
-             <height>40</height>
+             <height>50</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
-             <width>16777215</width>
-             <height>40</height>
+             <width>80</width>
+             <height>53</height>
             </size>
            </property>
            <property name="font">
             <font>
-             <pointsize>-1</pointsize>
-             <weight>75</weight>
+             <weight>50</weight>
              <italic>false</italic>
-             <bold>true</bold>
+             <bold>false</bold>
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true">
-background-color: rgb(233, 62, 48);
-    border-style: outset;
-    border-width: 2px;
-    border-radius: 10px;
-    border-color: beige;
-    font: bold 14px;
-    padding: 6px;
-color: rgb(255, 255, 255);</string>
+            <string notr="true"/>
            </property>
            <property name="text">
-            <string>Download Audio</string>
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset>
+             <normaloff>youtube_button_logo.png</normaloff>youtube_button_logo.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>40</width>
+             <height>40</height>
+            </size>
            </property>
            <property name="autoDefault">
             <bool>false</bool>
@@ -499,18 +500,20 @@ color: rgb(255, 255, 255);</string>
          <item>
           <widget class="QPushButton" name="spotify_button">
            <property name="styleSheet">
-            <string notr="true">
-background-color: rgb(233, 62, 48);
-    border-style: outset;
-    border-width: 2px;
-    border-radius: 10px;
-    border-color: beige;
-    font: bold 14px;
-    padding: 6px;
-color: rgb(255, 255, 255);</string>
+            <string notr="true"/>
            </property>
            <property name="text">
-            <string>Spotify csv</string>
+            <string>Spotify CSV</string>
+           </property>
+           <property name="icon">
+            <iconset>
+             <normaloff>spotify_icon.png</normaloff>spotify_icon.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
            </property>
           </widget>
          </item>
@@ -524,25 +527,26 @@ color: rgb(255, 255, 255);</string>
            </property>
            <property name="font">
             <font>
-             <pointsize>-1</pointsize>
-             <weight>75</weight>
+             <weight>50</weight>
              <italic>false</italic>
-             <bold>true</bold>
+             <bold>false</bold>
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true">
-background-color: rgb(233, 62, 48);
-    border-style: outset;
-    border-width: 2px;
-    border-radius: 10px;
-    border-color: beige;
-    font: bold 14px;
-    padding: 6px;
-color: rgb(255, 255, 255);</string>
+            <string notr="true"/>
            </property>
            <property name="text">
             <string>Download</string>
+           </property>
+           <property name="icon">
+            <iconset>
+             <normaloff>youtube_button_logo.png</normaloff>youtube_button_logo.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
            </property>
            <property name="default">
             <bool>false</bool>

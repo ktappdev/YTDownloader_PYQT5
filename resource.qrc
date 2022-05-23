@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="items">
+    <file>spotify_icon.png</file>
+    <file>youtube_button_logo.png</file>
     <file>ytlogo.png</file>
   </qresource>
 </RCC>

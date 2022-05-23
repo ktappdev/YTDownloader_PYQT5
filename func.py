@@ -1,14 +1,12 @@
-import os
 from moviepy.editor import *
-import sys
 from sys import platform
 from pathlib import Path
 import re
 
 from mutagen.easyid3 import EasyID3
 
-
-def set_id3_tag(file_path, title=None, artist=None, albumartist=None, album=None, genre=None, bpm=None, date=None, mood=None):
+def set_id3_tag(file_path, title=None, artist=None, albumartist=None, album=None, genre=None, bpm=None, date=None,
+                mood=None):
     tags = EasyID3(file_path)
     if title:
         tags['title'] = title
@@ -28,8 +26,6 @@ def set_id3_tag(file_path, title=None, artist=None, albumartist=None, album=None
         tags['mood'] = mood
 
     tags.save()
-
-
 
 
 def convert_rename_add_tags(mp4_path, tags=None):
@@ -74,7 +70,6 @@ def ensure_dir_exist(file_path):
     directory = os.path.dirname(file_path)
     if not os.path.exists(directory):
         os.makedirs(directory)
-
 
 
 def get_os_downloads_folder():
