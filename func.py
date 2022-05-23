@@ -5,6 +5,9 @@ from sys import platform
 from pathlib import Path
 import re
 
+from mutagen.easyid3 import EasyID3
+
+
 def set_id3_tag(file_path, title=None, artist=None, albumartist=None, album=None, genre=None, bpm=None, date=None, mood=None):
     tags = EasyID3(file_path)
     if title:
@@ -36,12 +39,12 @@ def convert_rename_add_tags(mp4_path, tags=None):
     videoclip.write_audiofile(mp3_file)
     videoclip.close()
     os.remove(mp4_path)
-    set_id3_tag(file_path='csv/song2.mp3',
-                title='Fake title',
-                artist='kendabeatmaker',
-                bpm='116',
-                date='1999',
-                genre='Hip Hop')
+    set_id3_tag(file_path=mp3_file,
+                title=tags[1],
+                artist=tags[0],
+                bpm=tags[7],
+                date=tags[4],
+                genre=tags[3])
     return 'Convert complete'
 
 
