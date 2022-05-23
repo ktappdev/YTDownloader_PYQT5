@@ -93,7 +93,6 @@ class Worker2(QObject):  # Second Thread for commit
                 open dialog chooser to get the csv file path
                 then parse it. for every song -  download - add tags, 
                 when finished call finish signal and return this function'''
-                # mainuiwindow.csv_file_picker()
                 with open(global_csv_file_path[0], newline='') as f:
                     reader = csv.reader(f)
                     header = next(reader)  # gets the first line / skips
@@ -338,8 +337,8 @@ class MainUiWindow(QMainWindow):
     #########################This triggers the Worker2 Thread#######################
     def download_list_clicked(self):
         if mainuiwindow.link_multi.toPlainText() == '':
-            QMessageBox.about(self, "Spotify Downloads", "Click ok to get csv file")
-
+            QMessageBox.about(self, "List Empty", "Please add song names or links to the list")
+            return
 
         self.thread2 = QThread()
         self.worker2 = Worker2()
