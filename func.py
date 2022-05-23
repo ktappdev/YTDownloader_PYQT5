@@ -5,6 +5,29 @@ from sys import platform
 from pathlib import Path
 import re
 
+def set_id3_tag(file_path, title=None, artist=None, albumartist=None, album=None, genre=None, bpm=None, date=None, mood=None):
+    tags = EasyID3(file_path)
+    if title:
+        tags['title'] = title
+    if artist:
+        tags['artist'] = artist
+    if albumartist:
+        tags['albumartist'] = albumartist
+    if album:
+        tags['album'] = album
+    if genre:
+        tags['genre'] = genre
+    if bpm:
+        tags['bpm'] = bpm
+    if date:
+        tags['date'] = date
+    if mood:
+        tags['mood'] = mood
+
+    tags.save()
+
+
+
 
 def convert_rename_add_tags(mp4_path, tags=None):
     mp4_file = mp4_path
@@ -13,6 +36,12 @@ def convert_rename_add_tags(mp4_path, tags=None):
     videoclip.write_audiofile(mp3_file)
     videoclip.close()
     os.remove(mp4_path)
+    set_id3_tag(file_path='csv/song2.mp3',
+                title='Fake title',
+                artist='kendabeatmaker',
+                bpm='116',
+                date='1999',
+                genre='Hip Hop')
     return 'Convert complete'
 
 
