@@ -17,5 +17,4 @@ def csv_operations(csv_file):
         tempo_index = header.index('Tempo')
         for song in reader:
             print(song[artist_name_index], song[song_name_index])
-            main.spotify_downloader()
 
