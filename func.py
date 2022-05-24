@@ -29,18 +29,27 @@ def set_id3_tag(file_path, title=None, artist=None, albumartist=None, album=None
 
 
 def convert_rename_add_tags(mp4_path, tags=None):
+    remove_from_filename = ['[Audio HD]', '(Radio Mix)', '(Official Video)',
+                            ' With lyrics', '(Radio Edit)', '[High Quality]',
+                            'HQ', '(Official Music Video)', '[Official Music Video]',
+                            '(OFFICIAL MUSIC VIDEO)', '(Audio)', '(Promo Radio Edit)',
+                            '(Video Official)', '(Official HD Video)', '(Clean version)', '(Clean)']
     mp4_file = mp4_path
     mp3_file = f'{mp4_path[:-4]}.mp3'
+    for txt in remove_from_filename:
+        mp3_file.replace(txt, '')
+
     videoclip = AudioFileClip(mp4_file)
     videoclip.write_audiofile(mp3_file)
     videoclip.close()
     os.remove(mp4_path)
-    set_id3_tag(file_path=mp3_file,
-                title=tags[1],
-                artist=tags[0],
-                bpm=tags[7],
-                date=tags[4],
-                genre=tags[3])
+    if tags:
+        set_id3_tag(file_path=mp3_file,
+                    title=tags[1],
+                    artist=tags[0],
+                    bpm=tags[7],
+                    date=tags[4],
+                    genre=tags[3])
     return 'Convert complete'
 
 

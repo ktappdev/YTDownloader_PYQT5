@@ -19,7 +19,6 @@ global_csv_file_path = ''
 class Worker(QObject):
     finished = pyqtSignal()
     progress = pyqtSignal(str)
-
     def run(self):
         download_location = mainuiwindow.download_location_label.text()
         """Download task"""
