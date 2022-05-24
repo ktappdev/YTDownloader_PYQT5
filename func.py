@@ -33,17 +33,14 @@ def convert_rename_add_tags(mp4_path, tags=None):
                             ' With lyrics', ' (Radio Edit)', ' [High Quality]',
                             ' HQ', ' (Official Music Video)', ' [Official Music Video]',
                             ' (OFFICIAL MUSIC VIDEO)', ' (Audio)', ' (Promo Radio Edit)',
-                            ' (Video Official)', ' (Official HD Video)', ' (Clean version)', ' (Clean)']
+                            ' (Video Official)', ' (Official HD Video)', ' (Clean version)',
+                            ' (Clean)', ' (Clean)', ' Clean version', 'Official Music Video', 'High Quality']
     mp4_file = mp4_path
     mp3_file = f'{mp4_path[:-4]}.mp3'
-    # for txt in remove_from_filename:
-    #     print(txt)
-    #     print(mp3_file)
-    #     if txt in mp3_file:
-    #         print("yes")
-    #     x = mp3_file.replace(txt, '')
-    #     print(x)
-    # hi
+    for txt in remove_from_filename:
+        if txt in mp3_file:
+            mp3_file = mp3_file.replace(txt, '')
+
     videoclip = AudioFileClip(mp4_file)
     videoclip.write_audiofile(mp3_file)
     videoclip.close()
