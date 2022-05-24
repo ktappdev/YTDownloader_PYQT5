@@ -1,3 +1,48 @@
+from moviepy.video.io.VideoFileClip import VideoFileClip
+from moviepy.video.VideoClip import ImageClip
+from moviepy.video.compositing.CompositeVideoClip import CompositeVideoClip
+from moviepy.audio.io.AudioFileClip import AudioFileClip
+from moviepy.audio.AudioClip import AudioClip
+from moviepy.editor import concatenate_videoclips,concatenate_audioclips,TextClip,CompositeVideoClip
+from moviepy.video.fx.accel_decel import accel_decel
+from moviepy.video.fx.blackwhite import blackwhite
+from moviepy.video.fx.blink import blink
+from moviepy.video.fx.colorx import colorx
+from moviepy.video.fx.crop import crop
+from moviepy.video.fx.even_size import even_size
+from moviepy.video.fx.fadein import fadein
+from moviepy.video.fx.fadeout import fadeout
+from moviepy.video.fx.freeze import freeze
+from moviepy.video.fx.freeze_region import freeze_region
+from moviepy.video.fx.gamma_corr import gamma_corr
+from moviepy.video.fx.headblur import headblur
+from moviepy.video.fx.invert_colors import invert_colors
+from moviepy.video.fx.loop import loop
+from moviepy.video.fx.lum_contrast import lum_contrast
+from moviepy.video.fx.make_loopable import make_loopable
+from moviepy.video.fx.margin import margin
+from moviepy.video.fx.mask_and import mask_and
+from moviepy.video.fx.mask_color import mask_color
+from moviepy.video.fx.mask_or import mask_or
+from moviepy.video.fx.mirror_x import mirror_x
+from moviepy.video.fx.mirror_y import mirror_y
+from moviepy.video.fx.painting import painting
+from moviepy.video.fx.resize import resize
+from moviepy.video.fx.rotate import rotate
+from moviepy.video.fx.scroll import scroll
+from moviepy.video.fx.speedx import speedx
+from moviepy.video.fx.supersample import supersample
+from moviepy.video.fx.time_mirror import time_mirror
+from moviepy.video.fx.time_symmetrize import time_symmetrize
+
+from moviepy.audio.fx.audio_fadein import audio_fadein
+from moviepy.audio.fx.audio_fadeout import audio_fadeout
+from moviepy.audio.fx.audio_left_right import audio_left_right
+from moviepy.audio.fx.audio_loop import audio_loop
+from moviepy.audio.fx.audio_normalize import audio_normalize
+from moviepy.audio.fx.volumex import volumex
+
+
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 import PyQt5.QtCore
 from pytube import YouTube
@@ -41,7 +86,7 @@ class Worker(QObject):
         elif mainuiwindow.select_raw_audio.isChecked():
             mainuiwindow.radio_button_state = "raw official audio"
         elif mainuiwindow.select_clean_audio.isChecked():
-            mainuiwindow.radio_button_state = "radio edit clean audio"
+            mainuiwindow.radio_button_state = "clean official audio"
 
         ################## youtube SERACH
         txt = mainuiwindow.link.text()
@@ -57,8 +102,8 @@ class Worker(QObject):
             video_list.append(video_url)
         ############## youtube single DOWNLOAD
         yt = YouTube(video_list[0])
-        if 'TTRR' in yt.title:
-            yt = YouTube(video_list[1])
+        # if 'TTRR' in yt.title:
+        #     yt = YouTube(video_list[1])
         self.progress.emit('Filtering songs')
         stream = yt.streams.get_audio_only()
         func.ensure_dir_exist(download_location)
@@ -86,6 +131,14 @@ class Worker2(QObject):  # Second Thread for commit
     def run(self):
         try:
             global global_csv_file_path
+
+            if mainuiwindow.select_audio.isChecked():
+                mainuiwindow.radio_button_state = "official audio"
+            elif mainuiwindow.select_raw_audio.isChecked():
+                mainuiwindow.radio_button_state = "raw official audio"
+            elif mainuiwindow.select_clean_audio.isChecked():
+                mainuiwindow.radio_button_state = "clean official audio"
+
             tags = []
             if not mainuiwindow.link_multi.toPlainText():
                 '''once the list box is empty and the download putton clicked 
@@ -128,8 +181,8 @@ class Worker2(QObject):  # Second Thread for commit
                         ############## DOWNLOAD
                         # down_inf = youtube_single_download(video_list, download_location)
                         yt = YouTube(video_list[0])
-                        if 'TTRR' in yt.title:
-                            yt = YouTube(video_list[1])
+                        # if 'TTRR' in yt.title:
+                        #     yt = YouTube(video_list[1])
                         # yt.streams.filter(only_audio=True)
                         stream = yt.streams.get_audio_only()
                         self.progress_multi.emit(f'Downloading...{yt.title}')
@@ -260,7 +313,7 @@ class MainUiWindow(QMainWindow):
         self.download_location_label = self.findChild(QLabel, "download_location_label")
         self.download_location_label_multi = self.findChild(QLabel, "download_location_label_multi")
         self.progress_bar_multi = self.findChild(QProgressBar, "progress_bar_multi")
-        self.radio_button_state = "radio edit clean audio"
+        # self.radio_button_state = "clean official audio"
 
         # Actions
         self.link.returnPressed.connect(self.download_clicked)

@@ -35,7 +35,9 @@ def convert_rename_add_tags(mp4_path, tags=None):
                             ' (OFFICIAL MUSIC VIDEO)', ' (Audio)', ' (Promo Radio Edit)',
                             ' (Video Official)', ' (Official HD Video)', ' (Clean version)',
                             ' (Clean)', ' (Clean)', ' Clean version', ' Official Music Video',
-                            ' High Quality', ' (Official Lyric Video)', ' (Lyric Video)', ' [Official Video]']
+                            ' High Quality', ' (Official Lyric Video)', ' (Lyric Video)',
+                            ' [Official Video]', ' (Clean Radio Edit)', '  (Official lyric video)',
+                            ' (Official Audio)', ' (Clean - Lyrics)']
     mp4_file = mp4_path
     mp3_file = f'{mp4_path[:-4]}.mp3'
     for txt in remove_from_filename:
