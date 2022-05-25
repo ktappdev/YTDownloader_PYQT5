@@ -1,9 +1,11 @@
+from multiprocessing import freeze_support
+freeze_support()
 from moviepy.video.io.VideoFileClip import VideoFileClip
 from moviepy.video.VideoClip import ImageClip
 from moviepy.video.compositing.CompositeVideoClip import CompositeVideoClip
 from moviepy.audio.io.AudioFileClip import AudioFileClip
 from moviepy.audio.AudioClip import AudioClip
-from moviepy.editor import concatenate_videoclips,concatenate_audioclips,TextClip,CompositeVideoClip
+from moviepy.editor import concatenate_videoclips, concatenate_audioclips, TextClip, CompositeVideoClip
 from moviepy.video.fx.accel_decel import accel_decel
 from moviepy.video.fx.blackwhite import blackwhite
 from moviepy.video.fx.blink import blink
@@ -42,7 +44,6 @@ from moviepy.audio.fx.audio_loop import audio_loop
 from moviepy.audio.fx.audio_normalize import audio_normalize
 from moviepy.audio.fx.volumex import volumex
 
-
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 import PyQt5.QtCore
 from pytube import YouTube
@@ -58,12 +59,15 @@ import subprocess
 import func
 import ssl
 import csv
+
 ssl._create_default_https_context = ssl._create_unverified_context
 global_csv_file_path = ''
+
 
 class Worker(QObject):
     finished = pyqtSignal()
     progress = pyqtSignal(str)
+
     def run(self):
         download_location = mainuiwindow.download_location_label.text()
         """Download task"""
@@ -141,10 +145,7 @@ class Worker2(QObject):  # Second Thread for commit
 
             tags = []
             if not mainuiwindow.link_multi.toPlainText():
-                '''once the list box is empty and the download putton clicked 
-                open dialog chooser to get the csv file path
-                then parse it. for every song -  download - add tags, 
-                when finished call finish signal and return this function'''
+                '''if the multi list is empty'''
                 with open(global_csv_file_path[0], newline='') as f:
                     reader = csv.reader(f)
                     header = next(reader)  # gets the first line / skips
@@ -154,7 +155,7 @@ class Worker2(QObject):  # Second Thread for commit
                     genre_index = header.index('Artist Genres')
                     album_release_date_index = header.index('Album Release Date')
                     energy_index = header.index('Energy')
-                    mode_index = header.index('Mode') # not using since i don't understand the number system they use
+                    mode_index = header.index('Mode')  # not using since i don't understand the number system they use
                     tempo_index = header.index('Tempo')
 
                     video_list = []
@@ -171,7 +172,8 @@ class Worker2(QObject):  # Second Thread for commit
                         tags.append(song[tempo_index])
                         self.progress_multi.emit(f'searching for {song[artist_name_index]} {song[song_name_index]}')
                         # print(song[artist_name_index], song[song_name_index])
-                        s = Search(f'{song[artist_name_index]} {song[song_name_index]} {mainuiwindow.radio_button_state}')
+                        s = Search(
+                            f'{song[artist_name_index]} {song[song_name_index]} {mainuiwindow.radio_button_state}')
                         for obj in s.results[:2]:
                             x = str(obj)
                             video_id = x[x.rfind('=') + 1:].strip('>')
@@ -203,11 +205,10 @@ class Worker2(QObject):  # Second Thread for commit
                 self.progress_multi.emit(f'All downloads complete, ready for more!')
                 self.progress_bar_multi.emit(0)
                 self.finished.emit()
-                return # End of spotify operations
+                return  # End of spotify operations
 
             '''This is the text box operations - can enter multiple youtube links or 
             multiple song name and artiste on new lines'''
-
 
             download_location = mainuiwindow.download_location_label_multi.text()
             #################### Youtube URL detection and download #####################
@@ -269,7 +270,7 @@ class Worker2(QObject):  # Second Thread for commit
         self.finished.emit()
 
 
-def youtube_single_download(link, op): #Using this for links still
+def youtube_single_download(link, op):  # Using this for links still
     if link == '':
         return
     yt = YouTube(link)
@@ -289,7 +290,8 @@ def youtube_single_download(link, op): #Using this for links still
 class MainUiWindow(QMainWindow):
     def __init__(self):
         super(MainUiWindow, self).__init__()
-        uic.loadUi("MainUiWindow.ui", self)
+        ui_loc = func.resource_path("MainUiWindow.ui")
+        uic.loadUi(ui_loc, self)
         self.thread = None
         self.thread2 = None
         self.worker = None
@@ -447,8 +449,6 @@ class MainUiWindow(QMainWindow):
         )
 
     ################################################
-
-
 
     def open_folder_clicked(self, btn):
         if btn == 'single':

@@ -36,8 +36,8 @@ def convert_rename_add_tags(mp4_path, tags=None):
                             ' (Video Official)', ' (Official HD Video)', ' (Clean version)',
                             ' (Clean)', ' (Clean)', ' Clean version', ' Official Music Video',
                             ' High Quality', ' (Official Lyric Video)', ' (Lyric Video)',
-                            ' [Official Video]', ' (Clean Radio Edit)', '  (Official lyric video)',
-                            ' (Official Audio)', ' (Clean - Lyrics)']
+                            ' [Official Video]', ' (Clean Radio Edit)', ' (Official lyrics video)',
+                            ' (Official Audio)', ' (Clean - Lyrics)', ' (BEST Clean Version)', ' (Lyric Video)']
     mp4_file = mp4_path
     mp3_file = f'{mp4_path[:-4]}.mp3'
     for txt in remove_from_filename:
@@ -74,10 +74,10 @@ def read_urls_from_search_box(search_box_contents):
         print(e)
     return list_of_urls
 
-    # def resource_path(relative_path):  # This function gets the absolute pathe of what ever you feed it, just so there is no location issue
-    #     if hasattr(sys, '_MEIPASS'):
-    #         return os.path.join(sys._MEIPASS, relative_path)
-    #     return os.path.join(os.path.abspath("."), relative_path)
+def resource_path(relative_path):  # This function gets the absolute pathe of what ever you feed it, just so there is no location issue
+    if hasattr(sys, '_MEIPASS'):
+        return os.path.join(sys._MEIPASS, relative_path)
+    return os.path.join(os.path.abspath("."), relative_path)
 
 
 def ensure_dir_exist(file_path):
