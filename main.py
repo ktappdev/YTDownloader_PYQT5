@@ -144,71 +144,6 @@ class Worker2(QObject):  # Second Thread for commit
                 mainuiwindow.radio_button_state = "clean official audio"
 
             tags = []
-            if not mainuiwindow.link_multi.toPlainText():
-                '''if the multi list is empty'''
-                with open(global_csv_file_path[0], newline='') as f:
-                    reader = csv.reader(f)
-                    header = next(reader)  # gets the first line / skips
-                    artist_name_index = header.index('Artist Name(s)')
-                    song_name_index = header.index('Track Name')
-                    album_name_index = header.index('Album Name')
-                    genre_index = header.index('Artist Genres')
-                    album_release_date_index = header.index('Album Release Date')
-                    energy_index = header.index('Energy')
-                    mode_index = header.index('Mode')  # not using since i don't understand the number system they use
-                    tempo_index = header.index('Tempo')
-
-                    video_list = []
-                    download_location = mainuiwindow.download_location_label_multi.text()
-                    for song in reader:
-                        '''these are the tags from the csv file'''
-                        tags.append(song[artist_name_index])
-                        tags.append(song[song_name_index])
-                        tags.append(song[album_name_index])
-                        tags.append(song[genre_index])
-                        tags.append(song[album_release_date_index])
-                        tags.append(song[energy_index])
-                        tags.append(song[mode_index])
-                        tags.append(song[tempo_index])
-                        self.progress_multi.emit(f'searching for {song[artist_name_index]} {song[song_name_index]}')
-                        # print(song[artist_name_index], song[song_name_index])
-                        s = Search(
-                            f'{song[artist_name_index]} {song[song_name_index]} {mainuiwindow.radio_button_state}')
-                        for obj in s.results[:2]:
-                            x = str(obj)
-                            video_id = x[x.rfind('=') + 1:].strip('>')
-                            video_url = f'https://www.youtube.com/watch?v={video_id}'
-                            video_list.append(video_url)
-
-                        ############## DOWNLOAD
-                        # down_inf = youtube_single_download(video_list, download_location)
-                        yt = YouTube(video_list[0])
-                        # if 'TTRR' in yt.title:
-                        #     yt = YouTube(video_list[1])
-                        # yt.streams.filter(only_audio=True)
-                        stream = yt.streams.get_audio_only()
-                        self.progress_multi.emit(f'Downloading...{yt.title}')
-                        file_path = stream.download(output_path=download_location)
-                        download_info = [yt.title, file_path, yt.vid_info]
-
-                        try:
-                            # func.rename_file(file_path)
-                            self.progress_multi.emit('Converting, renaming and adding IDTags')
-                            func.convert_rename_add_tags(file_path, tags=tags)
-                            tags.clear()
-                            video_list.clear()
-                        except Exception as ex:
-                            print(ex)
-                    # f.close()
-                download_location = None
-                # print(global_csv_file_path)
-                self.progress_multi.emit(f'All downloads complete, ready for more!')
-                self.progress_bar_multi.emit(0)
-                self.finished.emit()
-                return  # End of spotify operations
-
-            '''This is the text box operations - can enter multiple youtube links or 
-            multiple song name and artiste on new lines'''
 
             download_location = mainuiwindow.download_location_label_multi.text()
             #################### Youtube URL detection and download #####################
@@ -221,12 +156,6 @@ class Worker2(QObject):  # Second Thread for commit
                 self.finished.emit()
                 return
             ########## if there isn't any youtube link then its a text list ###########
-            if mainuiwindow.select_audio.isChecked():
-                mainuiwindow.radio_button_state = "official audio"
-            elif mainuiwindow.select_raw_audio.isChecked():
-                mainuiwindow.radio_button_state = "raw official audio"
-            elif mainuiwindow.select_clean_audio.isChecked():
-                mainuiwindow.radio_button_state = "radio edit clean audio"
 
             ################## youtube SERACH
             songs = mainuiwindow.link_multi.toPlainText().split("\n")
@@ -244,8 +173,8 @@ class Worker2(QObject):  # Second Thread for commit
                 ############## DOWNLOAD
                 # down_inf = youtube_single_download(video_list, download_location)
                 yt = YouTube(video_list[0])
-                if 'TTRR' in yt.title:
-                    yt = YouTube(video_list[1])
+                # if 'TTRR' in yt.title:
+                #     yt = YouTube(video_list[1])
                 # yt.streams.filter(only_audio=True)
                 stream = yt.streams.get_audio_only()
                 self.progress_multi.emit(f'Downloading...{yt.title}')
@@ -268,6 +197,90 @@ class Worker2(QObject):  # Second Thread for commit
         self.progress_multi.emit(f'All downloads complete, ready for more!')
         self.progress_bar_multi.emit(0)
         self.finished.emit()
+
+
+class Worker3(QObject):  # Second Thread for commit
+    finished = pyqtSignal()
+    progress_bar_multi = pyqtSignal(int)  # for Progress bar on multi page
+    progress_multi = pyqtSignal(str)  # for label on multi page
+
+    def run(self):
+        try:
+            global global_csv_file_path
+
+            if mainuiwindow.select_audio.isChecked():
+                mainuiwindow.radio_button_state = "official audio"
+            elif mainuiwindow.select_raw_audio.isChecked():
+                mainuiwindow.radio_button_state = "raw official audio"
+            elif mainuiwindow.select_clean_audio.isChecked():
+                mainuiwindow.radio_button_state = "clean official audio"
+
+            tags = []
+            with open(global_csv_file_path[0], newline='') as f:
+                reader = csv.reader(f)
+                header = next(reader)  # gets the first line / skips
+                artist_name_index = header.index('Artist Name(s)')
+                song_name_index = header.index('Track Name')
+                album_name_index = header.index('Album Name')
+                genre_index = header.index('Artist Genres')
+                album_release_date_index = header.index('Album Release Date')
+                energy_index = header.index('Energy')
+                mode_index = header.index('Mode')  # not using since i don't understand the number system they use
+                tempo_index = header.index('Tempo')
+
+                video_list = []
+                download_location = mainuiwindow.download_location_label_multi.text()
+                for song in reader:
+                    '''these are the tags from the csv file'''
+                    tags.append(song[artist_name_index])
+                    tags.append(song[song_name_index])
+                    tags.append(song[album_name_index])
+                    tags.append(song[genre_index])
+                    tags.append(song[album_release_date_index])
+                    tags.append(song[energy_index])
+                    tags.append(song[mode_index])
+                    tags.append(song[tempo_index])
+                    self.progress_multi.emit(f'searching for {song[artist_name_index]} {song[song_name_index]}')
+                    # print(song[artist_name_index], song[song_name_index])
+                    s = Search(
+                        f'{song[artist_name_index]} {song[song_name_index]} {mainuiwindow.radio_button_state}')
+                    for obj in s.results[:2]:
+                        x = str(obj)
+                        video_id = x[x.rfind('=') + 1:].strip('>')
+                        video_url = f'https://www.youtube.com/watch?v={video_id}'
+                        video_list.append(video_url)
+
+                    ############## DOWNLOAD
+                    # down_inf = youtube_single_download(video_list, download_location)
+                    yt = YouTube(video_list[0])
+                    # if 'TTRR' in yt.title:
+                    #     yt = YouTube(video_list[1])
+                    # yt.streams.filter(only_audio=True)
+                    stream = yt.streams.get_audio_only()
+                    self.progress_multi.emit(f'Downloading...{yt.title}')
+                    file_path = stream.download(output_path=download_location)
+                    download_info = [yt.title, file_path, yt.vid_info]
+
+                    try:
+                        # func.rename_file(file_path)
+                        self.progress_multi.emit('Converting, renaming and adding IDTags')
+                        func.convert_rename_add_tags(file_path, tags=tags)
+                        tags.clear()
+                        video_list.clear()
+                    except Exception as ex:
+                        print(ex)
+                # f.close()
+            download_location = None
+            # print(global_csv_file_path)
+            self.progress_multi.emit(f'All downloads complete, ready for more!')
+            self.progress_bar_multi.emit(0)
+            self.finished.emit()
+        except Exception as e2:
+            print(e2)
+
+
+
+
 
 
 def youtube_single_download(link, op):  # Using this for links still
@@ -378,6 +391,9 @@ class MainUiWindow(QMainWindow):
         # Final resets
         self.download_button.setEnabled(False)
         self.link.setEnabled(False)
+        self.download_list_button.setEnabled(False)
+        self.link_multi.setEnabled(False)
+        self.spotify_button.setEnabled(False)
         self.thread.finished.connect(
             lambda: self.download_button.setEnabled(True)
         )
@@ -386,6 +402,12 @@ class MainUiWindow(QMainWindow):
         )
         self.thread.finished.connect(
             lambda: self.link.setEnabled(True)
+        )
+        self.thread.finished.connect(
+            lambda: self.download_list_button.setEnabled(True)
+        )
+        self.thread.finished.connect(
+            lambda: self.spotify_button.setEnabled(True)
         )
 
     #########################This triggers the Worker2 Thread#######################
@@ -405,8 +427,11 @@ class MainUiWindow(QMainWindow):
         self.worker2.progress_bar_multi.connect(self.report_progress_bar_multi)
         self.thread2.start()
         # Final resets
+        self.download_button.setEnabled(False)
+        self.link.setEnabled(False)
         self.download_list_button.setEnabled(False)
         self.link_multi.setEnabled(False)
+        self.spotify_button.setEnabled(False)
         self.thread2.finished.connect(
             lambda: self.download_list_button.setEnabled(True)
         )
@@ -416,35 +441,43 @@ class MainUiWindow(QMainWindow):
         self.thread2.finished.connect(
             lambda: self.link_multi.setEnabled(True)
         )
+        self.thread2.finished.connect(
+            lambda: self.spotify_button.setEnabled(True)
+        )
+        self.thread.finished.connect(
+            lambda: self.download_button.setEnabled(True)
+        )
 
     ################################################
 
     #########################This triggers the Worker2 Thread#######################
     def spotify_button_clicked(self):
-        self.thread2 = QThread()
-        self.worker2 = Worker2()
-        self.worker2.moveToThread(self.thread2)
-        self.thread2.started.connect(self.worker2.run)
-        self.worker2.finished.connect(self.thread2.quit)
-        self.worker2.finished.connect(self.worker2.deleteLater)
-        self.thread2.finished.connect(self.thread2.deleteLater)
-        self.worker2.progress_multi.connect(self.reportProgress_multi)
-        self.worker2.progress_bar_multi.connect(self.report_progress_bar_multi)
-        self.thread2.start()
+        self.thread3 = QThread()
+        self.worker3 = Worker3()
+        self.worker3.moveToThread(self.thread3)
+        self.thread3.started.connect(self.worker3.run)
+        self.worker3.finished.connect(self.thread3.quit)
+        self.worker3.finished.connect(self.worker3.deleteLater)
+        self.thread3.finished.connect(self.thread3.deleteLater)
+        self.worker3.progress_multi.connect(self.reportProgress_multi)
+        self.worker3.progress_bar_multi.connect(self.report_progress_bar_multi)
+        self.thread3.start()
         # Final resets
-        self.spotify_button.setEnabled(False)
+        self.download_button.setEnabled(False)
+        self.link.setEnabled(False)
         self.download_list_button.setEnabled(False)
         self.link_multi.setEnabled(False)
-        self.thread2.finished.connect(
+        self.spotify_button.setEnabled(False)
+        self.thread3.finished.connect(
             lambda: self.download_list_button.setEnabled(True)
         )
-        self.thread2.finished.connect(
+        self.thread3.finished.connect(
             lambda: self.spotify_button.setEnabled(True)
         )
-        self.thread2.finished.connect(
-            lambda: self.link_multi.clear()
+        self.thread.finished.connect(
+            lambda: self.download_button.setEnabled(True)
         )
-        self.thread2.finished.connect(
+        self.thread3.finished.connect(
             lambda: self.link_multi.setEnabled(True)
         )
 
