@@ -216,6 +216,8 @@ class Worker3(QObject):  # Second Thread for commit
                 mainuiwindow.radio_button_state = "clean official audio"
 
             tags = []
+            ''' open the csv, search for these values in the header to get the 
+            index so even if they change it up in the future it still might work'''
             with open(global_csv_file_path[0], newline='') as f:
                 reader = csv.reader(f)
                 header = next(reader)  # gets the first line / skips
@@ -444,7 +446,7 @@ class MainUiWindow(QMainWindow):
         self.thread2.finished.connect(
             lambda: self.spotify_button.setEnabled(True)
         )
-        self.thread.finished.connect(
+        self.thread2.finished.connect(
             lambda: self.download_button.setEnabled(True)
         )
 
@@ -474,7 +476,7 @@ class MainUiWindow(QMainWindow):
         self.thread3.finished.connect(
             lambda: self.spotify_button.setEnabled(True)
         )
-        self.thread.finished.connect(
+        self.thread3.finished.connect(
             lambda: self.download_button.setEnabled(True)
         )
         self.thread3.finished.connect(

@@ -641,7 +641,7 @@
      <widget class="QPushButton" name="change_location_button_multi">
       <property name="geometry">
        <rect>
-        <x>280</x>
+        <x>290</x>
         <y>170</y>
         <width>75</width>
         <height>23</height>
@@ -723,7 +723,7 @@
      <widget class="QPushButton" name="open_folder_multi">
       <property name="geometry">
        <rect>
-        <x>360</x>
+        <x>510</x>
         <y>170</y>
         <width>75</width>
         <height>23</height>
