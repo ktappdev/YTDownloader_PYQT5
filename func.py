@@ -45,8 +45,10 @@ def convert_rename_add_tags(mp4_path, tags=None):
     mp4_file = mp4_path
     mp3_file = f'{mp4_path[:-4]}.mp3'
     for txt in remove_from_filename:
-        if txt in mp3_file:
-            mp3_file = mp3_file.replace(txt, '')
+        if txt.lower() in mp3_file.lower():
+            start = mp3_file.find(txt)
+            stop = len(txt)
+            mp3_file = mp3_file[0: start:] + mp3_file[start + stop:]
 
     videoclip = AudioFileClip(mp4_file)
     videoclip.write_audiofile(mp3_file)
