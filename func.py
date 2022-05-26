@@ -5,6 +5,7 @@ import re
 
 from mutagen.easyid3 import EasyID3
 
+
 def set_id3_tag(file_path, title=None, artist=None, albumartist=None, album=None, genre=None, bpm=None, date=None,
                 mood=None):
     tags = EasyID3(file_path)
@@ -44,7 +45,7 @@ def convert_rename_add_tags(mp4_path, tags=None):
                             ' (music video)', ' music video']
     mp4_file = mp4_path
     mp3_file = f'{mp4_path[:-4]}.mp3'
-    for txt in remove_from_filename:
+    for txt in remove_from_filename:  # This rename code is beastly
         if txt.lower() in mp3_file.lower():
             start = mp3_file.find(txt)
             stop = len(txt)
@@ -80,7 +81,9 @@ def read_urls_from_search_box(search_box_contents):
         print(e)
     return list_of_urls
 
-def resource_path(relative_path):  # This function gets the absolute pathe of what ever you feed it, just so there is no location issue
+
+def resource_path(
+        relative_path):  # This function gets the absolute pathe of what ever you feed it, just so there is no location issue
     if hasattr(sys, '_MEIPASS'):
         return os.path.join(sys._MEIPASS, relative_path)
     return os.path.join(os.path.abspath("."), relative_path)
