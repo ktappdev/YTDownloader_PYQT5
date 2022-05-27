@@ -120,7 +120,7 @@ class Worker(QObject):
         try:
             # func.rename_file(file_path)
             self.progress.emit('Converting and adding tags')
-            func.convert_rename_add_tags(file_path)
+            func.convert_rename_add_tags(mp4_path=file_path, tags=None)
         except Exception as e:
             print(str(e))
         self.progress.emit(f'Downloaded - {song_name}')
@@ -199,7 +199,7 @@ class Worker2(QObject):  # Second Thread for commit
         self.finished.emit()
 
 
-class Worker3(QObject):  # Second Thread for commit
+class Worker3(QObject):  # third Thread spotify process
     finished = pyqtSignal()
     progress_bar_multi = pyqtSignal(int)  # for Progress bar on multi page
     progress_multi = pyqtSignal(str)  # for label on multi page
@@ -343,6 +343,25 @@ class MainUiWindow(QMainWindow):
         self.change_location_button.clicked.connect(lambda: self.download_location_picker('single'))
         self.change_location_button_multi.clicked.connect(lambda: self.download_location_picker('multi'))
         self.spotify_button.clicked.connect(lambda: self.csv_file_picker())
+        self.link_multi.textChanged.connect(lambda: self.disable_spotify_on_text())
+
+        '''do on text enter disable spotify button
+        The QTextEdit textChanged signal has a different signature to the 
+        QLineEdit textChanged signal, in that it doesn't pass the text 
+        that was changed. This is because QTextEdit supports rich-text 
+        (i.e. html) as well as plain-text, so you need to explicitly request 
+        the content-type you want:
+
+        self.IP.textChanged.connect(self.textSonDurum)
+    
+        def textSonDurum(self):
+        print("Text changed...>>> " + self.IP.toPlainText())'''
+
+    def disable_spotify_on_text(self):
+        if not self.link_multi.toPlainText():
+            self.spotify_button.setEnabled(True)
+        else:
+            self.spotify_button.setEnabled(False)
 
     def reportProgress(self, s):
         self.update_label.setText(s)
@@ -372,7 +391,7 @@ class MainUiWindow(QMainWindow):
         return
 
     #########################This triggers the Worker Thread#######################
-    def download_clicked(self):
+    def download_clicked(self): #Thread 1
         if mainuiwindow.link.text() == '':
             QMessageBox.about(self, "Error", "Please enter song and artiste name")
             return
@@ -411,9 +430,12 @@ class MainUiWindow(QMainWindow):
         self.thread.finished.connect(
             lambda: self.spotify_button.setEnabled(True)
         )
+        self.thread.finished.connect(
+            lambda: self.link_multi.setEnabled(True)
+        )
 
     #########################This triggers the Worker2 Thread#######################
-    def download_list_clicked(self):
+    def download_list_clicked(self): # thread 2
         if mainuiwindow.link_multi.toPlainText() == '':
             QMessageBox.about(self, "List Empty", "Please add song names or links to the list")
             return
@@ -453,7 +475,7 @@ class MainUiWindow(QMainWindow):
     ################################################
 
     #########################This triggers the Worker2 Thread#######################
-    def spotify_button_clicked(self):
+    def spotify_button_clicked(self): #Spotify process
         self.thread3 = QThread()
         self.worker3 = Worker3()
         self.worker3.moveToThread(self.thread3)

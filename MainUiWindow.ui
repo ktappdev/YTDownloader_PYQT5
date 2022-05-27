@@ -355,7 +355,7 @@
            <number>0</number>
           </property>
           <property name="text">
-           <string>Paste Link or Enter song name and artiste in the search box</string>
+           <string>Paste link or enter song name and artiste in the search box</string>
           </property>
           <property name="scaledContents">
            <bool>false</bool>
