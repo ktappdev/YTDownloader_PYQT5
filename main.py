@@ -311,7 +311,7 @@ class MainUiWindow(QMainWindow):
         self.worker = None
         self.worker2 = None
 
-
+# te
         self.download_button = self.findChild(QPushButton, "download_button")
         self.update_label = self.findChild(QLabel, "update_label")
         self.update_label_multi = self.findChild(QLabel, "update_label_multi")
