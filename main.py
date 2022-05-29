@@ -375,7 +375,7 @@ class MainUiWindow(QMainWindow):
     # def resetSearchBoxfunc(self):
     #     self.link.clear()
 
-    def download_location_picker(self, lbl):
+    def download_location_picker(self):
         user_location = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
         self.download_location_label_multi.setText(user_location)
         return user_location
@@ -513,24 +513,25 @@ class MainUiWindow(QMainWindow):
                 subprocess.Popen(["xdg-open", path])
             except Exception as e:
                 print(e)
+    ''' This will handle playlist when i'm ready to impliment'''
+    # def download_youtube_playlist(self):
+    #     print('playlist func ran')
+    #     pl = input('Paste playlist here >')
+    #     playlist = Playlist(pl)
+    #     print('*' * 40)
+    #     print(f'Playlist contains {len(playlist)} items')
+    #     print('*' * 40)
+    #     for url in playlist[:3]:
+    #         func.youtube_single_download(url)
+    ''' This def download_youtube_playlist(self): will handle playlist when i'm ready to impliment'''
 
-    def download_youtube_playlist(self):
-        print('playlist func ran')
-        pl = input('Paste playlist here >')
-        playlist = Playlist(pl)
-        print('*' * 40)
-        print(f'Playlist contains {len(playlist)} items')
-        print('*' * 40)
-        for url in playlist[:3]:
-            self.func.youtube_single_download(url)
-
-    def download_list_of_songs_from_file(self, list_of_songs):
-        print('playlist from file func ran')
-        self.update_label.setText('Getting list of songs from file')
-        self.update_label.setText(f'File contains {len(list_of_songs)} songs')
-        for song in list_of_songs:
-            self.update_label.setText(f'Currently downloading song - {song}')
-            self.func.youtube_single_download(song)
+    # def download_list_of_songs_from_file(self, list_of_songs):
+    #     print('playlist from file func ran')
+    #     self.update_label.setText('Getting list of songs from file')
+    #     self.update_label.setText(f'File contains {len(list_of_songs)} songs')
+    #     for song in list_of_songs:
+    #         self.update_label.setText(f'Currently downloading song - {song}')
+    #         self.func.youtube_single_download(song)
 
 
 if __name__ == "__main__":
@@ -539,8 +540,8 @@ if __name__ == "__main__":
     icon = QtGui.QIcon()
     icon.addPixmap(QtGui.QPixmap("icon.ico"), QtGui.QIcon.Selected, QtGui.QIcon.On)
     mainuiwindow.setWindowIcon(icon)
-    mainuiwindow.setFixedWidth(624)
-    mainuiwindow.setFixedHeight(360)
+    mainuiwindow.setFixedWidth(800)
+    mainuiwindow.setFixedHeight(400)
     mainuiwindow.show()
     try:
         sys.exit(app.exec())
