@@ -339,7 +339,7 @@ class MainUiWindow(QMainWindow):
         # self.download_button.clicked.connect(self.download_clicked)
         self.download_list_button.clicked.connect(self.download_list_clicked)
         # self.open_folder.clicked.connect(lambda: self.open_folder_clicked('single'))
-        self.open_folder_multi.clicked.connect(lambda: self.open_folder_clicked('multi'))
+        self.open_folder_multi.clicked.connect(lambda: self.open_folder_clicked())
         # self.change_location_button.clicked.connect(lambda: self.download_location_picker('single'))
         self.change_location_button_multi.clicked.connect(lambda: self.download_location_picker())
         self.spotify_button.clicked.connect(lambda: self.csv_file_picker())
@@ -447,8 +447,6 @@ class MainUiWindow(QMainWindow):
         self.worker2.progress_bar_multi.connect(self.report_progress_bar_multi)
         self.thread2.start()
         # Final resets
-        self.download_button.setEnabled(False)
-        self.link.setEnabled(False)
         self.download_list_button.setEnabled(False)
         self.link_multi.setEnabled(False)
         self.spotify_button.setEnabled(False)
@@ -464,9 +462,7 @@ class MainUiWindow(QMainWindow):
         self.thread2.finished.connect(
             lambda: self.spotify_button.setEnabled(True)
         )
-        self.thread2.finished.connect(
-            lambda: self.download_button.setEnabled(True)
-        )
+
 
     ################################################
 
@@ -483,8 +479,6 @@ class MainUiWindow(QMainWindow):
         self.worker3.progress_bar_multi.connect(self.report_progress_bar_multi)
         self.thread3.start()
         # Final resets
-        self.download_button.setEnabled(False)
-        self.link.setEnabled(False)
         self.download_list_button.setEnabled(False)
         self.link_multi.setEnabled(False)
         self.spotify_button.setEnabled(False)
@@ -495,19 +489,13 @@ class MainUiWindow(QMainWindow):
             lambda: self.spotify_button.setEnabled(True)
         )
         self.thread3.finished.connect(
-            lambda: self.download_button.setEnabled(True)
-        )
-        self.thread3.finished.connect(
             lambda: self.link_multi.setEnabled(True)
         )
 
     ################################################
 
-    def open_folder_clicked(self, btn):
-        if btn == 'single':
-            path = self.download_location_label.text()
-        else:
-            path = self.download_location_label_multi.text()
+    def open_folder_clicked(self):
+        path = self.download_location_label_multi.text()
         if platform == "win32":
             try:
                 os.startfile(path)
