@@ -303,7 +303,7 @@ def youtube_single_download(link, op):  # Using this for links still
 class MainUiWindow(QMainWindow):
     def __init__(self):
         super(MainUiWindow, self).__init__()
-        ui_loc = func.resource_path("MainUiWindow.ui")
+        ui_loc = func.resource_path("MainUiWindow_redesign.ui")
         uic.loadUi(ui_loc, self)
         # self.setStyleSheet(style.stylesheet)
         self.thread = None
