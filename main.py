@@ -1,4 +1,5 @@
 from multiprocessing import freeze_support
+
 freeze_support()
 from moviepy.video.io.VideoFileClip import VideoFileClip
 from moviepy.video.VideoClip import ImageClip
@@ -43,7 +44,7 @@ from moviepy.audio.fx.audio_left_right import audio_left_right
 from moviepy.audio.fx.audio_loop import audio_loop
 from moviepy.audio.fx.audio_normalize import audio_normalize
 from moviepy.audio.fx.volumex import volumex
-
+import style
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 import PyQt5.QtCore
 from pytube import YouTube
@@ -59,6 +60,7 @@ import subprocess
 import func
 import ssl
 import csv
+from sys import platform as _platform
 
 ssl._create_default_https_context = ssl._create_unverified_context
 global_csv_file_path = ''
@@ -281,10 +283,6 @@ class Worker3(QObject):  # third Thread spotify process
             print(e2)
 
 
-
-
-
-
 def youtube_single_download(link, op):  # Using this for links still
     if link == '':
         return
@@ -307,10 +305,12 @@ class MainUiWindow(QMainWindow):
         super(MainUiWindow, self).__init__()
         ui_loc = func.resource_path("MainUiWindow.ui")
         uic.loadUi(ui_loc, self)
+        # self.setStyleSheet(style.stylesheet)
         self.thread = None
         self.thread2 = None
         self.worker = None
         self.worker2 = None
+
 
         self.download_button = self.findChild(QPushButton, "download_button")
         self.update_label = self.findChild(QLabel, "update_label")
@@ -391,7 +391,7 @@ class MainUiWindow(QMainWindow):
         return
 
     #########################This triggers the Worker Thread#######################
-    def download_clicked(self): #Thread 1
+    def download_clicked(self):  # Thread 1
         if mainuiwindow.link.text() == '':
             QMessageBox.about(self, "Error", "Please enter song and artiste name")
             return
@@ -435,7 +435,7 @@ class MainUiWindow(QMainWindow):
         )
 
     #########################This triggers the Worker2 Thread#######################
-    def download_list_clicked(self): # thread 2
+    def download_list_clicked(self):  # thread 2
         if mainuiwindow.link_multi.toPlainText() == '':
             QMessageBox.about(self, "List Empty", "Please add song names or links to the list")
             return
@@ -475,7 +475,7 @@ class MainUiWindow(QMainWindow):
     ################################################
 
     #########################This triggers the Worker2 Thread#######################
-    def spotify_button_clicked(self): #Spotify process
+    def spotify_button_clicked(self):  # Spotify process
         self.thread3 = QThread()
         self.worker3 = Worker3()
         self.worker3.moveToThread(self.thread3)
