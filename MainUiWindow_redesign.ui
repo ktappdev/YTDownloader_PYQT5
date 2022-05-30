@@ -179,7 +179,7 @@
         <property name="spacing">
          <number>5</number>
         </property>
-        <item alignment="Qt::AlignLeft">
+        <item>
          <widget class="QPushButton" name="spotify_button">
           <property name="styleSheet">
            <string notr="true"/>
@@ -205,7 +205,7 @@
           </property>
          </widget>
         </item>
-        <item alignment="Qt::AlignRight">
+        <item>
          <widget class="QPushButton" name="download_list_button">
           <property name="font">
            <font>
