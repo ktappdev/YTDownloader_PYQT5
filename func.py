@@ -35,7 +35,7 @@ def convert_rename_add_tags(mp4_path, tags=None):
                             ' HQ', ' (Official Music Video)', ' [Official Music Video]',
                             ' (OFFICIAL MUSIC VIDEO)', ' (Audio)', ' (Promo Radio Edit)',
                             ' (Video Official)', ' (Official HD Video)', ' (Clean version)',
-                            ' (Clean)', ' (Clean)', ' Clean version', ' Official Music Video',
+                            ' (Clean)', ' [clean]', ' (Clean)', ' Clean version', ' Official Music Video',
                             ' High Quality', ' (Official Lyric Video)', ' (Lyric Video)',
                             ' [Official Video]', ' (Clean Radio Edit)', ' (Official lyrics video)',
                             ' (Official Audio)', ' (Clean - Lyrics)', ' (BEST Clean Version)', ' (Lyric Video)',
