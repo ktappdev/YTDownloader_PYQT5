@@ -88,16 +88,16 @@ def convert_rename_add_tags(mp4_path, tags=None):
         os.remove(mp4_path)
     except Exception as e:
         print(str(e) + '-This is from the convert function')
-    # if tags:
-    #     try:
-    #         set_id3_tag(file_path=mp3_file,
-    #                     title=tags[1],
-    #                     artist=tags[0],
-    #                     bpm=tags[7],
-    #                     date=tags[4],
-    #                     genre=tags[3])
-    #     except Exception as e:
-    #         print(e)
+    if tags:
+        try:
+            set_id3_tag(file_path=mp3_file,
+                        title=tags[1],
+                        artist=tags[0],
+                        bpm=tags[7],
+                        date=tags[4],
+                        genre=tags[3])
+        except Exception as e:
+            print(e)
     return 'Convert complete'
 
 
