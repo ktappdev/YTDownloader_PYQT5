@@ -133,6 +133,7 @@ class Worker2(QObject):  # Second Thread for commit
     finished = pyqtSignal()
     progress_bar_multi = pyqtSignal(int)  # for Progress bar on multi page
     progress_multi = pyqtSignal(str)  # for label on multi page
+    download_count_label = pyqtSignal(str)  # for label on multi page
 
 
     def run(self):
@@ -162,7 +163,9 @@ class Worker2(QObject):  # Second Thread for commit
 
             ################## youtube SERACH
             songs = mainuiwindow.link_multi.toPlainText().split("\n")
-            p = round(100 / len(songs))
+            # p = round(100 / len(songs))
+            progress_split = 100 / int(len(songs))
+            progress_split_ = 0
             video_list = []
             for song in songs:
                 self.progress_multi.emit(f'Searching for - {song}')
@@ -190,7 +193,10 @@ class Worker2(QObject):  # Second Thread for commit
                 except Exception as ex:
                     print(ex)
                 self.progress_multi.emit(f'Downloaded - {download_info[0]}')
-                self.progress_bar_multi.emit(mainuiwindow.progress_bar_multi.value() + p)
+                # self.progress_bar_multi.emit(mainuiwindow.progress_bar_multi.value() + p)
+                progress_split_ = progress_split_ + round(progress_split)
+                self.progress_bar_multi.emit(progress_split_)
+
                 self.progress_multi.emit('Download complete')
                 song_name = download_info[0]
                 video_list.clear()
@@ -246,6 +252,8 @@ class Worker3(QObject):  # third Thread spotify process
                 tempo_index = header.index('Tempo')
                 song_count = 0
                 video_list = []
+                progress_split = 100 / int(songs_in_csv)
+                progress_split_ = 0
                 download_location = mainuiwindow.download_location_label_multi.text()
 
                 # self.download_count_label.emit(f'Downloading song 1 of {songs_in_csv}')
@@ -291,7 +299,8 @@ class Worker3(QObject):  # third Thread spotify process
                         video_list.clear()
                     except Exception as ex:
                         print(ex)
-
+                    progress_split_ = progress_split_ + round(progress_split)
+                    self.progress_bar_multi.emit(progress_split_)
                 # f.close()
             download_location = None
             # print(global_csv_file_path)
@@ -468,6 +477,7 @@ class MainUiWindow(QMainWindow):
         self.worker2.finished.connect(self.worker2.deleteLater)
         self.thread2.finished.connect(self.thread2.deleteLater)
         self.worker2.progress_multi.connect(self.reportProgress_multi)
+        self.worker2.progress_bar_multi.connect(self.report_progress_bar_multi)
         self.worker2.download_count_label.connect(self.report_count_Progress_multi)
 
         self.thread2.start()
