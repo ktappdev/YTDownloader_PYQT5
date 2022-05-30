@@ -51,7 +51,7 @@ from pytube import YouTube
 from pytube import Search
 from pytube import Playlist
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QLineEdit, QRadioButton, QFileDialog, \
+from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QRadioButton, QFileDialog, \
     QProgressBar, QMessageBox, QTextEdit
 from PyQt5 import uic, QtGui
 import os
