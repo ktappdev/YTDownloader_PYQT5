@@ -134,6 +134,7 @@ class Worker2(QObject):  # Second Thread for commit
     progress_bar_multi = pyqtSignal(int)  # for Progress bar on multi page
     progress_multi = pyqtSignal(str)  # for label on multi page
 
+
     def run(self):
         try:
             global global_csv_file_path
@@ -201,10 +202,16 @@ class Worker2(QObject):  # Second Thread for commit
         self.finished.emit()
 
 
+
+
+
+
+
 class Worker3(QObject):  # third Thread spotify process
     finished = pyqtSignal()
     progress_bar_multi = pyqtSignal(int)  # for Progress bar on multi page
     progress_multi = pyqtSignal(str)  # for label on multi page
+    download_count_label = pyqtSignal(str)  # for label on multi page
 
     def run(self):
         try:
@@ -218,6 +225,12 @@ class Worker3(QObject):  # third Thread spotify process
                 mainuiwindow.radio_button_state = "clean official audio"
 
             tags = []
+            with open(global_csv_file_path[0], newline='') as file:
+                reader = csv.reader(file)
+                header = next(reader)
+                songs_in_csv = sum(1 for row in reader)
+                file.close()
+
             ''' open the csv, search for these values in the header to get the 
             index so even if they change it up in the future it still might work'''
             with open(global_csv_file_path[0], newline='') as f:
@@ -231,10 +244,15 @@ class Worker3(QObject):  # third Thread spotify process
                 energy_index = header.index('Energy')
                 mode_index = header.index('Mode')  # not using since i don't understand the number system they use
                 tempo_index = header.index('Tempo')
-
+                song_count = 0
                 video_list = []
                 download_location = mainuiwindow.download_location_label_multi.text()
+
+                # self.download_count_label.emit(f'Downloading song 1 of {songs_in_csv}')
+
                 for song in reader:
+                    song_count = song_count + 1
+                    self.download_count_label.emit(f'Downloading song {song_count} of {songs_in_csv}')
                     '''these are the tags from the csv file'''
                     tags.append(song[artist_name_index])
                     tags.append(song[song_name_index])
@@ -244,7 +262,7 @@ class Worker3(QObject):  # third Thread spotify process
                     tags.append(song[energy_index])
                     tags.append(song[mode_index])
                     tags.append(song[tempo_index])
-                    self.progress_multi.emit(f'searching for {song[artist_name_index]} {song[song_name_index]}')
+                    self.progress_multi.emit(f'Searching for {song[artist_name_index]} {song[song_name_index]}')
                     # print(song[artist_name_index], song[song_name_index])
                     s = Search(
                         f'{song[artist_name_index]} {song[song_name_index]} {mainuiwindow.radio_button_state}')
@@ -273,10 +291,12 @@ class Worker3(QObject):  # third Thread spotify process
                         video_list.clear()
                     except Exception as ex:
                         print(ex)
+
                 # f.close()
             download_location = None
             # print(global_csv_file_path)
             self.progress_multi.emit(f'All downloads complete, ready for more!')
+            self.download_count_label.emit(f'Ready To Download')
             self.progress_bar_multi.emit(0)
             self.finished.emit()
         except Exception as e2:
@@ -315,6 +335,7 @@ class MainUiWindow(QMainWindow):
         # self.download_button = self.findChild(QPushButton, "download_button")
         # self.update_label = self.findChild(QLabel, "update_label")
         self.update_label_multi = self.findChild(QLabel, "update_label_multi")
+        self.update_count_label_multi = self.findChild(QLabel, "update_count_label_multi")
         # self.open_folder = self.findChild(QPushButton, "open_folder")
         self.open_folder_multi = self.findChild(QPushButton, "open_folder_multi")
         self.spotify_button = self.findChild(QPushButton, "spotify_button")
@@ -368,6 +389,9 @@ class MainUiWindow(QMainWindow):
 
     def reportProgress_multi(self, s):
         self.update_label_multi.setText(s)
+
+    def report_count_Progress_multi(self, s):
+        self.update_count_label_multi.setText(s)
 
     def report_progress_bar_multi(self, s):
         self.progress_bar_multi.setValue(s)
@@ -444,7 +468,8 @@ class MainUiWindow(QMainWindow):
         self.worker2.finished.connect(self.worker2.deleteLater)
         self.thread2.finished.connect(self.thread2.deleteLater)
         self.worker2.progress_multi.connect(self.reportProgress_multi)
-        self.worker2.progress_bar_multi.connect(self.report_progress_bar_multi)
+        self.worker2.download_count_label.connect(self.report_count_Progress_multi)
+
         self.thread2.start()
         # Final resets
         self.download_list_button.setEnabled(False)
@@ -476,6 +501,7 @@ class MainUiWindow(QMainWindow):
         self.worker3.finished.connect(self.worker3.deleteLater)
         self.thread3.finished.connect(self.thread3.deleteLater)
         self.worker3.progress_multi.connect(self.reportProgress_multi)
+        self.worker3.download_count_label.connect(self.report_count_Progress_multi)
         self.worker3.progress_bar_multi.connect(self.report_progress_bar_multi)
         self.thread3.start()
         # Final resets
