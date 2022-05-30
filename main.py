@@ -310,6 +310,8 @@ class Worker3(QObject):  # third Thread spotify process
             self.finished.emit()
         except Exception as e2:
             print(e2)
+            self.progress_multi.emit(str(e2) + ' MAYBE NOT CSV FILE')
+            self.finished.emit()
 
 
 def youtube_single_download(link, op):  # Using this for links still
@@ -416,6 +418,9 @@ class MainUiWindow(QMainWindow):
     def csv_file_picker(self):
         global global_csv_file_path
         global_csv_file_path = QFileDialog.getOpenFileName(self)
+        print(global_csv_file_path)
+        if not global_csv_file_path[0]:
+            return
         self.spotify_button_clicked()
         return
 
@@ -503,6 +508,7 @@ class MainUiWindow(QMainWindow):
 
     #########################This triggers the Worker2 Thread#######################
     def spotify_button_clicked(self):  # Spotify process
+
         self.thread3 = QThread()
         self.worker3 = Worker3()
         self.worker3.moveToThread(self.thread3)
