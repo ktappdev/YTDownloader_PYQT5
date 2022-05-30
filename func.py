@@ -30,38 +30,74 @@ def set_id3_tag(file_path, title=None, artist=None, albumartist=None, album=None
 
 
 def convert_rename_add_tags(mp4_path, tags=None):
-    remove_from_filename = [' [Audio HD]', ' (Radio Mix)', ' (Official Video)',
-                            ' With lyrics', ' (Radio Edit)', ' [High Quality]',
-                            ' HQ', ' (Official Music Video)', ' [Official Music Video]',
-                            ' (OFFICIAL MUSIC VIDEO)', ' (Audio)', ' (Promo Radio Edit)',
-                            ' (Video Official)', ' (Official HD Video)', ' (Clean version)',
-                            ' (Clean)', ' [clean]', ' (Clean)', ' Clean version', ' Official Music Video',
-                            ' High Quality', ' (Official Lyric Video)', ' (Lyric Video)',
-                            ' [Official Video]', ' (Clean Radio Edit)', ' (Official lyrics video)',
-                            ' (Official Audio)', ' (Clean - Lyrics)', ' (BEST Clean Version)', ' (Lyric Video)',
-                            ' clean version', ' official visualizer', ' Official Visualizer', ' visualizer',
-                            ' (Official Visualizer)', ' (visualizer)', ' [Official Visualizer]', ' [Official HD Video]',
-                            ' Music Video', ' [Music Video]', ' (Music Video)', ' [music video]',
-                            ' (music video)', ' music video']
+    remove_from_filename = [' [Audio HD]',
+                            ' (Radio Mix)',
+                            ' (Official Video)',
+                            ' (lyrics)',
+                            ' (Radio Edit)',
+                            ' [High Quality]',
+                            ' (Official Music Video)',
+                            ' [Official Music Video]',
+                            ' (OFFICIAL MUSIC VIDEO)',
+                            ' (Audio)',
+                            ' (Promo Radio Edit)',
+                            ' (Video Official)',
+                            ' (Official HD Video)',
+                            ' [Clean version]',
+                            ' [clean]',
+                            ' (Clean)',
+                            ' (High Quality)',
+                            ' (Official Lyric Video)',
+                            ' (Lyric Video)',
+                            ' [Official Video]',
+                            ' (Clean Radio Edit)',
+                            ' (Official lyrics video)',
+                            ' (Official Audio)',
+                            ' (Clean - Lyrics)',
+                            ' (BEST Clean Version)',
+                            ' (Lyric Video)',
+                            ' (clean version)',
+                            ' [visualizer]',
+                            ' (Official Visualizer)',
+                            ' (visualizer)',
+                            ' [Official Visualizer]',
+                            ' [Official HD Video]',
+                            ' [Music Video]',
+                            ' (Music Video)',
+                            ' [music video]',
+                            ' (music video)',
+                            ' (BEST Clean Version)']
     mp4_file = mp4_path
+    print(mp4_file)
     mp3_file = f'{mp4_path[:-4]}.mp3'
+    print(mp3_file)
     for txt in remove_from_filename:  # This rename code is beastly
         if txt.lower() in mp3_file.lower():
+            print('Found ' + txt)
             start = mp3_file.find(txt)
             stop = len(txt)
             mp3_file = mp3_file[0: start:] + mp3_file[start + stop:]
-
-    videoclip = AudioFileClip(mp4_file)
-    videoclip.write_audiofile(mp3_file)
-    videoclip.close()
-    os.remove(mp4_path)
-    if tags:
-        set_id3_tag(file_path=mp3_file,
-                    title=tags[1],
-                    artist=tags[0],
-                    bpm=tags[7],
-                    date=tags[4],
-                    genre=tags[3])
+            print('new mp3 file name - ' + mp3_file)
+    try:
+        print('Reading this mp4 file - ' + mp4_file)
+        videoclip = AudioFileClip(mp4_file)
+        print('Writing to this mp3 file - ' + mp3_file)
+        videoclip.write_audiofile(mp3_file)
+        videoclip.close()
+        print('Removing this mp4 file - ' + mp4_file)
+        os.remove(mp4_path)
+    except Exception as e:
+        print(str(e) + '-This is from the convert function')
+    # if tags:
+    #     try:
+    #         set_id3_tag(file_path=mp3_file,
+    #                     title=tags[1],
+    #                     artist=tags[0],
+    #                     bpm=tags[7],
+    #                     date=tags[4],
+    #                     genre=tags[3])
+    #     except Exception as e:
+    #         print(e)
     return 'Convert complete'
 
 
