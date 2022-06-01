@@ -143,9 +143,9 @@ class Worker2(QObject):  # Second Thread for commit
             if mainuiwindow.select_audio.isChecked():
                 mainuiwindow.radio_button_state = "official audio"
             elif mainuiwindow.select_raw_audio.isChecked():
-                mainuiwindow.radio_button_state = "raw official audio"
+                mainuiwindow.radio_button_state = "raw audio"
             elif mainuiwindow.select_clean_audio.isChecked():
-                mainuiwindow.radio_button_state = "clean official audio"
+                mainuiwindow.radio_button_state = "clean audio"
 
             tags = []
 
@@ -208,11 +208,6 @@ class Worker2(QObject):  # Second Thread for commit
         self.finished.emit()
 
 
-
-
-
-
-
 class Worker3(QObject):  # third Thread spotify process
     finished = pyqtSignal()
     progress_bar_multi = pyqtSignal(int)  # for Progress bar on multi page
@@ -226,12 +221,12 @@ class Worker3(QObject):  # third Thread spotify process
             if mainuiwindow.select_audio.isChecked():
                 mainuiwindow.radio_button_state = "official audio"
             elif mainuiwindow.select_raw_audio.isChecked():
-                mainuiwindow.radio_button_state = "raw official audio"
+                mainuiwindow.radio_button_state = "raw audio"
             elif mainuiwindow.select_clean_audio.isChecked():
-                mainuiwindow.radio_button_state = "clean official audio"
+                mainuiwindow.radio_button_state = "clean audio"
 
             tags = []
-            with open(global_csv_file_path[0], newline='') as file:
+            with open(global_csv_file_path[0], encoding="utf8") as file:
                 reader = csv.reader(file)
                 header = next(reader)
                 songs_in_csv = sum(1 for row in reader)
@@ -239,7 +234,7 @@ class Worker3(QObject):  # third Thread spotify process
 
             ''' open the csv, search for these values in the header to get the 
             index so even if they change it up in the future it still might work'''
-            with open(global_csv_file_path[0], newline='') as f:
+            with open(global_csv_file_path[0], encoding="utf8") as f:
                 reader = csv.reader(f)
                 header = next(reader)  # gets the first line / skips
                 artist_name_index = header.index('Artist Name(s)')
