@@ -1,5 +1,4 @@
 from multiprocessing import freeze_support
-
 freeze_support()
 from moviepy.video.io.VideoFileClip import VideoFileClip
 from moviepy.video.VideoClip import ImageClip
@@ -141,7 +140,7 @@ class Worker2(QObject):  # Second Thread for commit
             global global_csv_file_path
 
             if mainuiwindow.select_audio.isChecked():
-                mainuiwindow.radio_button_state = "official audio"
+                mainuiwindow.radio_button_state = ""
             elif mainuiwindow.select_raw_audio.isChecked():
                 mainuiwindow.radio_button_state = "raw official audio"
             elif mainuiwindow.select_clean_audio.isChecked():
@@ -220,26 +219,33 @@ class Worker3(QObject):  # third Thread spotify process
     download_count_label = pyqtSignal(str)  # for label on multi page
 
     def run(self):
+        # try:
+        global global_csv_file_path
+
+        if mainuiwindow.select_audio.isChecked():
+            mainuiwindow.radio_button_state = ""
+        elif mainuiwindow.select_raw_audio.isChecked():
+            mainuiwindow.radio_button_state = "raw official audio"
+        elif mainuiwindow.select_clean_audio.isChecked():
+            mainuiwindow.radio_button_state = "clean official audio"
+
+        tags = []
         try:
-            global global_csv_file_path
-
-            if mainuiwindow.select_audio.isChecked():
-                mainuiwindow.radio_button_state = "official audio"
-            elif mainuiwindow.select_raw_audio.isChecked():
-                mainuiwindow.radio_button_state = "raw official audio"
-            elif mainuiwindow.select_clean_audio.isChecked():
-                mainuiwindow.radio_button_state = "clean official audio"
-
-            tags = []
-            with open(global_csv_file_path[0], newline='') as file:
+            with open(global_csv_file_path[0], encoding="utf8") as file:
                 reader = csv.reader(file)
                 header = next(reader)
+                print(header)
                 songs_in_csv = sum(1 for row in reader)
                 file.close()
-
-            ''' open the csv, search for these values in the header to get the 
-            index so even if they change it up in the future it still might work'''
-            with open(global_csv_file_path[0], newline='') as f:
+        except Exception as e:
+            print(e)
+            self.progress_multi.emit(str(e) + ' error getting number of songs in csv file')
+            self.finished.emit()
+            return
+        ''' open the csv, search for these values in the header to get the 
+        index so even if they change it up in the future it still might work'''
+        try:
+            with open(global_csv_file_path[0], encoding="utf8") as f:
                 reader = csv.reader(f)
                 header = next(reader)  # gets the first line / skips
                 artist_name_index = header.index('Artist Name(s)')
@@ -255,63 +261,68 @@ class Worker3(QObject):  # third Thread spotify process
                 progress_split = 100 / int(songs_in_csv)
                 progress_split_ = 0
                 download_location = mainuiwindow.download_location_label_multi.text()
+        except Exception as e2:
+            print(e2)
+            self.progress_multi.emit(str(e2) + ' error getting Tags')
+            self.finished.emit()
 
-                # self.download_count_label.emit(f'Downloading song 1 of {songs_in_csv}')
-
-                for song in reader:
-                    song_count = song_count + 1
-                    self.download_count_label.emit(f'Downloading song {song_count} of {songs_in_csv}')
-                    '''these are the tags from the csv file'''
-                    tags.append(song[artist_name_index])
-                    tags.append(song[song_name_index])
-                    tags.append(song[album_name_index])
-                    tags.append(song[genre_index])
-                    tags.append(song[album_release_date_index])
-                    tags.append(song[energy_index])
-                    tags.append(song[mode_index])
-                    tags.append(song[tempo_index])
-                    self.progress_multi.emit(f'Searching for {song[artist_name_index]} {song[song_name_index]}')
-                    # print(song[artist_name_index], song[song_name_index])
-                    s = Search(
-                        f'{song[artist_name_index]} {song[song_name_index]} {mainuiwindow.radio_button_state}')
+            for song in reader:
+                song_count = song_count + 1
+                self.download_count_label.emit(f'Downloading song {song_count} of {songs_in_csv}')
+                '''these are the tags from the csv file'''
+                tags.append(song[artist_name_index])
+                tags.append(song[song_name_index])
+                tags.append(song[album_name_index])
+                tags.append(song[genre_index])
+                tags.append(song[album_release_date_index])
+                tags.append(song[energy_index])
+                tags.append(song[mode_index])
+                tags.append(song[tempo_index])
+                self.progress_multi.emit(f'Searching for {song[artist_name_index]} {song[song_name_index]}')
+                # print(song[artist_name_index], song[song_name_index])
+                try:
+                    s = Search(f'{song[artist_name_index]} {song[song_name_index]} {mainuiwindow.radio_button_state}')
                     for obj in s.results[:2]:
                         x = str(obj)
                         video_id = x[x.rfind('=') + 1:].strip('>')
                         video_url = f'https://www.youtube.com/watch?v={video_id}'
                         video_list.append(video_url)
-
-                    ############## DOWNLOAD
-                    # down_inf = youtube_single_download(video_list, download_location)
+                except Exception as e3:
+                    print(e3)
+                    self.progress_multi.emit(str(e3) + ' error while searching')
+                    self.finished.emit()
+                ############## DOWNLOAD
+                # down_inf = youtube_single_download(video_list, download_location)
+                try:
                     yt = YouTube(video_list[0])
-                    # if 'TTRR' in yt.title:
-                    #     yt = YouTube(video_list[1])
-                    # yt.streams.filter(only_audio=True)
                     stream = yt.streams.get_audio_only()
                     self.progress_multi.emit(f'Downloading...{yt.title}')
                     file_path = stream.download(output_path=download_location)
                     download_info = [yt.title, file_path, yt.vid_info]
+                except Exception as e4:
+                    print(e4)
+                    self.progress_multi.emit(str(e4) + ' error getting Tags')
+                    self.finished.emit()
+                try:
+                    # func.rename_file(file_path)
+                    self.progress_multi.emit('Converting, renaming and adding IDTags')
+                    func.convert_rename_add_tags(file_path, tags=tags)
+                    tags.clear()
+                    video_list.clear()
+                except Exception as e5:
+                    print(e5)
+                    self.progress_multi.emit(str(e5) + ' error converting or writing tags')
+                    self.finished.emit()
+                progress_split_ = progress_split_ + round(progress_split)
+                self.progress_bar_multi.emit(progress_split_)
+            # f.close()
+        download_location = None
+        # print(global_csv_file_path)
+        self.progress_multi.emit(f'All downloads complete, ready for more!')
+        self.download_count_label.emit(f'Ready To Download')
+        self.progress_bar_multi.emit(0)
+        self.finished.emit()
 
-                    try:
-                        # func.rename_file(file_path)
-                        self.progress_multi.emit('Converting, renaming and adding IDTags')
-                        func.convert_rename_add_tags(file_path, tags=tags)
-                        tags.clear()
-                        video_list.clear()
-                    except Exception as ex:
-                        print(ex)
-                    progress_split_ = progress_split_ + round(progress_split)
-                    self.progress_bar_multi.emit(progress_split_)
-                # f.close()
-            download_location = None
-            # print(global_csv_file_path)
-            self.progress_multi.emit(f'All downloads complete, ready for more!')
-            self.download_count_label.emit(f'Ready To Download')
-            self.progress_bar_multi.emit(0)
-            self.finished.emit()
-        except Exception as e2:
-            print(e2)
-            self.progress_multi.emit(str(e2) + ' MAYBE NOT CSV FILE')
-            self.finished.emit()
 
 
 def youtube_single_download(link, op):  # Using this for links still
