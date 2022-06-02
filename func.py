@@ -40,6 +40,7 @@ def convert_rename_add_tags(mp4_path, tags=None):
                             ' [Official Music Video]',
                             ' (OFFICIAL MUSIC VIDEO)',
                             ' (Audio)',
+                            ' (Audio )',
                             ' (Promo Radio Edit)',
                             ' (Video Official)',
                             ' (Official HD Video)',
