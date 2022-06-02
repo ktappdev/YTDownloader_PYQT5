@@ -74,7 +74,7 @@ def convert_rename_add_tags(mp4_path, tags=None):
     for txt in remove_from_filename:  # This rename code is beastly
         if txt.lower() in mp3_file.lower():
             print('Found ' + txt)
-            start = mp3_file.find(txt)
+            start = mp3_file.lower().find(txt.lower())
             stop = len(txt)
             mp3_file = mp3_file[0: start:] + mp3_file[start + stop:]
             print('new mp3 file name - ' + mp3_file)
