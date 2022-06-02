@@ -269,7 +269,10 @@ class Worker3(QObject):  # third Thread spotify process
                     # print(song[artist_name_index], song[song_name_index])
                     s = Search(
                         f'{song[artist_name_index]} {song[song_name_index]} {mainuiwindow.radio_button_state}')
-                    for obj in s.results[:2]:
+                    print(s)
+                    if not s.results: # if you draw blank rap on the board
+                        continue
+                    for obj in s.results[:1]:
                         x = str(obj)
                         video_id = x[x.rfind('=') + 1:].strip('>')
                         video_url = f'https://www.youtube.com/watch?v={video_id}'
