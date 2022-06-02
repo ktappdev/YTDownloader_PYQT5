@@ -275,7 +275,7 @@ class Worker3(QObject):  # third Thread spotify process
                         video_url = f'https://www.youtube.com/watch?v={video_id}'
                         video_list.append(video_url)
 
-                    ############## DOWNLOAD
+                    ############## DOWNLOAD func
                     # down_inf = youtube_single_download(video_list, download_location)
                     yt = YouTube(video_list[0])
                     # if 'TTRR' in yt.title:
