@@ -168,6 +168,8 @@ class Worker2(QObject):  # Second Thread for commit
             progress_split_ = 0
             video_list = []
             for song in songs:
+                if song == '':
+                    continue
                 self.progress_multi.emit(f'Searching for - {song}')
                 s = Search(f'{song} {mainuiwindow.radio_button_state}')
                 for obj in s.results[:2]:
@@ -271,7 +273,7 @@ class Worker3(QObject):  # third Thread spotify process
                         f'{song[artist_name_index]} {song[song_name_index]} {mainuiwindow.radio_button_state}')
                     print(s)
                     if not s.results: # if you draw blank rap on the board
-                        continue
+                        continue # skip this song
                     for obj in s.results[:1]:
                         x = str(obj)
                         video_id = x[x.rfind('=') + 1:].strip('>')
