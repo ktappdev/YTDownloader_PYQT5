@@ -1,6 +1,7 @@
 from multiprocessing import freeze_support
 
 freeze_support()
+# These unused imports are necessary for moviepy to be imported properly when making exe
 from moviepy.video.io.VideoFileClip import VideoFileClip
 from moviepy.video.VideoClip import ImageClip
 from moviepy.video.compositing.CompositeVideoClip import CompositeVideoClip
@@ -44,7 +45,6 @@ from moviepy.audio.fx.audio_left_right import audio_left_right
 from moviepy.audio.fx.audio_loop import audio_loop
 from moviepy.audio.fx.audio_normalize import audio_normalize
 from moviepy.audio.fx.volumex import volumex
-import style
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 import PyQt5.QtCore
 from pytube import YouTube
@@ -65,68 +65,6 @@ from sys import platform as _platform
 ssl._create_default_https_context = ssl._create_unverified_context
 global_csv_file_path = ''
 
-
-# class Worker(QObject):
-#     finished = pyqtSignal()
-#     progress = pyqtSignal(str)
-#
-#     def run(self):
-#         download_location = mainuiwindow.download_location_label.text()
-#         """Download task"""
-#         if mainuiwindow.link.text() == '':
-#             mainuiwindow.update_label.setText("ERROR - Please enter a song name and artiste")
-#             return
-#         #################### Youtube URL detection #####################
-#         list_of_urls_ = func.read_urls_from_search_box(mainuiwindow.link.text())
-#         if list_of_urls_:
-#             self.progress.emit(f'Found {len(list_of_urls_)} youtube urls, Downloading...')
-#             for link in list_of_urls_:
-#                 print(link)
-#                 down_inf = youtube_single_download(link, download_location)
-#                 self.progress.emit(f'Downloaded - {down_inf[0]}')
-#             self.finished.emit()
-#             # End URL Detection on the single download page
-#             return
-#         if mainuiwindow.select_audio.isChecked():
-#             mainuiwindow.radio_button_state = "official audio"
-#         elif mainuiwindow.select_raw_audio.isChecked():
-#             mainuiwindow.radio_button_state = "raw official audio"
-#         elif mainuiwindow.select_clean_audio.isChecked():
-#             mainuiwindow.radio_button_state = "clean official audio"
-#
-#         ################## youtube SERACH
-#         txt = mainuiwindow.link.text()
-#         radio_button_state = mainuiwindow.radio_button_state
-#         video_list = []
-#         self.progress.emit(f'Searching for - {txt}')
-#         s = Search(f'{txt} {radio_button_state}')
-#         for obj in s.results[:2]:
-#             x = str(
-#                 obj)
-#             video_id = x[x.rfind('=') + 1:].strip('>')
-#             video_url = f'https://www.youtube.com/watch?v={video_id}'
-#             video_list.append(video_url)
-#         ############## youtube single DOWNLOAD
-#         yt = YouTube(video_list[0])
-#         # if 'TTRR' in yt.title:
-#         #     yt = YouTube(video_list[1])
-#         self.progress.emit('Filtering songs')
-#         stream = yt.streams.get_audio_only()
-#         func.ensure_dir_exist(download_location)
-#         self.progress.emit('Downloading...')
-#         file_path = stream.download(output_path=download_location)
-#         download_info = [yt.title, file_path, yt.vid_info]
-#         self.progress.emit('Download complete')
-#         song_name = download_info[0]
-#         # song_info = download_info[2]
-#         try:
-#             # func.rename_file(file_path)
-#             self.progress.emit('Converting and adding tags')
-#             func.convert_rename_add_tags(mp4_path=file_path, tags=None)
-#         except Exception as e:
-#             print(str(e))
-#         self.progress.emit(f'Downloaded - {song_name}')
-#         self.finished.emit()
 
 
 class Worker2(QObject):  # Second Thread for commit
@@ -336,7 +274,6 @@ class MainUiWindow(QMainWindow):
         super(MainUiWindow, self).__init__()
         ui_loc = func.resource_path("MainUiWindow_redesign.ui")
         uic.loadUi(ui_loc, self)
-        # self.setStyleSheet(style.stylesheet)
         self.thread = None
         self.thread2 = None
         self.worker = None
