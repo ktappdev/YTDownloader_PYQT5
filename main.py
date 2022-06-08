@@ -1,3 +1,4 @@
+import math
 from multiprocessing import freeze_support
 
 freeze_support()
@@ -52,7 +53,7 @@ from pytube import Search
 from pytube import Playlist
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QRadioButton, QFileDialog, \
-    QProgressBar, QMessageBox, QTextEdit
+    QProgressBar, QMessageBox, QTextEdit, QLineEdit
 from PyQt5 import uic, QtGui
 import os
 from sys import platform
@@ -78,16 +79,7 @@ class Worker2(QObject):  # Second Thread for commit
         try:
             global global_csv_file_path
 
-            if mainuiwindow.select_audio.isChecked():
-                mainuiwindow.radio_button_state = "official audio"
-            elif mainuiwindow.select_raw_audio.isChecked():
-                mainuiwindow.radio_button_state = "raw audio"
-            elif mainuiwindow.select_clean_audio.isChecked():
-                mainuiwindow.radio_button_state = "clean audio"
-
-            tags = []
-
-            download_location = mainuiwindow.download_location_label_multi.text()
+            download_location = mainuiwindow.download_location.text()
             #################### Youtube URL detection and download #####################
             list_of_urls_ = func.read_urls_from_search_box(mainuiwindow.link_multi.toPlainText())
             if list_of_urls_:
@@ -106,6 +98,16 @@ class Worker2(QObject):  # Second Thread for commit
             progress_split_ = 0
             video_list = []
             for song in songs:
+                # Get clenliness on every loop, should be able to hot swap
+                if mainuiwindow.select_audio.isChecked():
+                    mainuiwindow.radio_button_state = "official audio"
+                elif mainuiwindow.select_raw_audio.isChecked():
+                    mainuiwindow.radio_button_state = "raw audio"
+                elif mainuiwindow.select_clean_audio.isChecked():
+                    mainuiwindow.radio_button_state = "clean audio"
+                # Get clenliness on every loop, should be able to hot swap
+
+
                 if song == '':
                     continue
                 self.progress_multi.emit(f'Searching for - {song}')
@@ -117,30 +119,22 @@ class Worker2(QObject):  # Second Thread for commit
                     video_list.append(video_url)
 
                 ############## DOWNLOAD
-                # down_inf = youtube_single_download(video_list, download_location)
                 yt = YouTube(video_list[0])
-                # if 'TTRR' in yt.title:
-                #     yt = YouTube(video_list[1])
-                # yt.streams.filter(only_audio=True)
                 stream = yt.streams.get_audio_only()
                 self.progress_multi.emit(f'Downloading...{yt.title}')
                 file_path = stream.download(output_path=download_location)
                 download_info = [yt.title, file_path, yt.vid_info]
                 try:
-                    # func.rename_file(file_path)
-                    self.progress_multi.emit('Converting, renaming and adding IDTags')
+                    self.progress_multi.emit('...converting, renaming and adding IDTags...')
                     func.convert_rename_add_tags(file_path)
                 except Exception as ex:
                     print(ex)
                 self.progress_multi.emit(f'Downloaded - {download_info[0]}')
-                # self.progress_bar_multi.emit(mainuiwindow.progress_bar_multi.value() + p)
                 progress_split_ = progress_split_ + round(progress_split)
                 self.progress_bar_multi.emit(progress_split_)
 
                 self.progress_multi.emit('Download complete')
-                song_name = download_info[0]
                 video_list.clear()
-                # song_info = download_info[2]
         except Exception as e:
             print(e)
         self.progress_multi.emit(f'All downloads complete, ready for more!')
@@ -158,17 +152,10 @@ class Worker3(QObject):  # third Thread spotify process
         try:
             global global_csv_file_path
 
-            if mainuiwindow.select_audio.isChecked():
-                mainuiwindow.radio_button_state = "official audio"
-            elif mainuiwindow.select_raw_audio.isChecked():
-                mainuiwindow.radio_button_state = "raw audio"
-            elif mainuiwindow.select_clean_audio.isChecked():
-                mainuiwindow.radio_button_state = "clean audio"
-
             tags = []
             with open(global_csv_file_path[0], encoding="utf8") as file:
                 reader = csv.reader(file)
-                header = next(reader)
+                _ = next(reader)
                 songs_in_csv = sum(1 for row in reader)
                 file.close()
 
@@ -188,12 +175,22 @@ class Worker3(QObject):  # third Thread spotify process
                 song_count = 0
                 video_list = []
                 progress_split = 100 / int(songs_in_csv)
-                progress_split_ = 0
-                download_location = mainuiwindow.download_location_label_multi.text()
+                progress_split_ = 0.0
+                download_location = mainuiwindow.download_location.text()
 
                 # self.download_count_label.emit(f'Downloading song 1 of {songs_in_csv}')
 
                 for song in reader:
+                    # Get cleanliness on every loop, should be able to hot swap
+                    if mainuiwindow.select_audio.isChecked():
+                        mainuiwindow.radio_button_state = "official audio"
+                    elif mainuiwindow.select_raw_audio.isChecked():
+                        mainuiwindow.radio_button_state = "raw audio"
+                    elif mainuiwindow.select_clean_audio.isChecked():
+                        mainuiwindow.radio_button_state = "clean audio"
+                    # Get clenliness on every loop, should be able to hot swap
+
+
                     song_count = song_count + 1
                     self.download_count_label.emit(f'Downloading song {song_count} of {songs_in_csv}')
                     '''these are the tags from the csv file'''
@@ -205,11 +202,8 @@ class Worker3(QObject):  # third Thread spotify process
                     tags.append(song[energy_index])
                     tags.append(song[mode_index])
                     tags.append(song[tempo_index])
-                    self.progress_multi.emit(f'Searching for {song[artist_name_index]} {song[song_name_index]}')
-                    # print(song[artist_name_index], song[song_name_index])
-                    s = Search(
-                        f'{song[artist_name_index]} {song[song_name_index]} {mainuiwindow.radio_button_state}')
-                    print(s)
+                    self.progress_multi.emit(f'Searching for {song[artist_name_index]} by {song[song_name_index]}')
+                    s = Search(f'{song[artist_name_index]} - {song[song_name_index]} {mainuiwindow.radio_button_state}')
                     if not s.results: # if you draw blank rap on the board
                         continue # skip this song
                     for obj in s.results[:1]:
@@ -217,38 +211,33 @@ class Worker3(QObject):  # third Thread spotify process
                         video_id = x[x.rfind('=') + 1:].strip('>')
                         video_url = f'https://www.youtube.com/watch?v={video_id}'
                         video_list.append(video_url)
+                    '''i can remove this but i'm fine with storing 
+                         link to two search result, might use it someday'''
 
                     ############## DOWNLOAD function
-                    # down_inf = youtube_single_download(video_list, download_location)
                     yt = YouTube(video_list[0])
-                    # if 'TTRR' in yt.title:
-                    #     yt = YouTube(video_list[1])
-                    # yt.streams.filter(only_audio=True)
                     stream = yt.streams.get_audio_only()
                     self.progress_multi.emit(f'Downloading...{yt.title}')
                     file_path = stream.download(output_path=download_location)
-                    download_info = [yt.title, file_path, yt.vid_info]
+                    # download_info = [yt.title, file_path, yt.vid_info]
 
                     try:
-                        # func.rename_file(file_path)
-                        self.progress_multi.emit('Converting, renaming and adding IDTags')
+                        self.progress_multi.emit('...converting, renaming and adding IDTags...')
                         func.convert_rename_add_tags(file_path, tags=tags)
                         tags.clear()
                         video_list.clear()
                     except Exception as ex:
                         print(ex)
-                    progress_split_ = progress_split_ + round(progress_split)
-                    self.progress_bar_multi.emit(progress_split_)
-                # f.close()
-            download_location = None
-            # print(global_csv_file_path)
+                    progress_split_ = progress_split_ + progress_split
+                    self.progress_bar_multi.emit(math.ceil(progress_split_)) #round up
+
             self.progress_multi.emit(f'All downloads complete, ready for more!')
             self.download_count_label.emit(f'Ready To Download')
             self.progress_bar_multi.emit(0)
             self.finished.emit()
         except Exception as e2:
             print(e2)
-            self.progress_multi.emit(str(e2) + ' MAYBE NOT CSV FILE')
+            self.progress_multi.emit(str(e2) + ' MAYBE NOT CSV FILE OR THE CSV DON\'T HAVE THE RIGHT INFO')
             self.finished.emit()
 
 
@@ -256,8 +245,6 @@ def youtube_single_download(link, op):  # Using this for links still
     if link == '':
         return
     yt = YouTube(link)
-    # if 'TTRR' in yt.title:
-    #     yt = YouTube(link[1])
     yt.streams.filter(only_audio=True)
     stream = yt.streams.get_audio_only()
     file_path = stream.download(output_path=op)
@@ -274,42 +261,28 @@ class MainUiWindow(QMainWindow):
         super(MainUiWindow, self).__init__()
         ui_loc = func.resource_path("MainUiWindow_redesign.ui")
         uic.loadUi(ui_loc, self)
-        self.thread = None
+        self.thread3 = None
+        self.worker3 = None
         self.thread2 = None
-        self.worker = None
         self.worker2 = None
 
-
-        # self.download_button = self.findChild(QPushButton, "download_button")
-        # self.update_label = self.findChild(QLabel, "update_label")
         self.update_label_multi = self.findChild(QLabel, "update_label_multi")
         self.update_count_label_multi = self.findChild(QLabel, "update_count_label_multi")
-        # self.open_folder = self.findChild(QPushButton, "open_folder")
         self.open_folder_multi = self.findChild(QPushButton, "open_folder_multi")
         self.spotify_button = self.findChild(QPushButton, "spotify_button")
-        # self.op_input = self.findChild(QLineEdit, "op_input")
-        # self.link = self.findChild(QLineEdit, "link")
         self.link_multi = self.findChild(QTextEdit, "link_multi")
+        self.download_location = self.findChild(QLineEdit, "download_location")
         self.select_audio = self.findChild(QRadioButton, "select_audio")
         self.select_raw_audio = self.findChild(QRadioButton, "select_raw_audio")
         self.select_clean_audio = self.findChild(QRadioButton, "select_clean_audio")
         self.download_list_button = self.findChild(QPushButton, "download_list_button")
-        # self.change_location_button = self.findChild(QPushButton, "change_location_button")
         self.change_location_button_multi = self.findChild(QPushButton, "change_location_button_multi")
-        # self.download_location_label = self.findChild(QLabel, "download_location_label")
-        self.download_location_label_multi = self.findChild(QLabel, "download_location_label_multi")
         self.progress_bar_multi = self.findChild(QProgressBar, "progress_bar_multi")
-        # self.radio_button_state = "clean official audio"
 
         # Actions
-        # self.link.returnPressed.connect(self.download_clicked)
-        # self.download_location_label.setText(f'{func.get_os_downloads_folder()}/Youtube/')
-        self.download_location_label_multi.setText(f'{func.get_os_downloads_folder()}/Youtube/Multi')
-        # self.download_button.clicked.connect(self.download_clicked)
+        self.download_location.setText(f'{func.get_os_downloads_folder()}/Youtube/Multi')
         self.download_list_button.clicked.connect(self.download_list_clicked)
-        # self.open_folder.clicked.connect(lambda: self.open_folder_clicked('single'))
         self.open_folder_multi.clicked.connect(lambda: self.open_folder_clicked())
-        # self.change_location_button.clicked.connect(lambda: self.download_location_picker('single'))
         self.change_location_button_multi.clicked.connect(lambda: self.download_location_picker())
         self.spotify_button.clicked.connect(lambda: self.csv_file_picker())
         self.link_multi.textChanged.connect(lambda: self.disable_spotify_on_text())
@@ -332,9 +305,6 @@ class MainUiWindow(QMainWindow):
         else:
             self.spotify_button.setEnabled(False)
 
-    # def reportProgress(self, s):
-    #     self.update_label.setText(s)
-
     def reportProgress_multi(self, s):
         self.update_label_multi.setText(s)
 
@@ -344,12 +314,10 @@ class MainUiWindow(QMainWindow):
     def report_progress_bar_multi(self, s):
         self.progress_bar_multi.setValue(s)
 
-    # def resetSearchBoxfunc(self):
-    #     self.link.clear()
 
     def download_location_picker(self):
         user_location = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
-        self.download_location_label_multi.setText(user_location)
+        self.download_location.setText(user_location)
         return user_location
 
     def csv_file_picker(self):
@@ -361,49 +329,6 @@ class MainUiWindow(QMainWindow):
         self.spotify_button_clicked()
         return
 
-    #########################This triggers the Worker Thread#######################
-    # def download_clicked(self):  # Thread 1
-    #     if mainuiwindow.link.text() == '':
-    #         QMessageBox.about(self, "Error", "Please enter song and artiste name")
-    #         return
-    #
-    #     self.thread = QThread()
-    #
-    #     self.worker = Worker()
-    #
-    #     self.worker.moveToThread(self.thread)
-    #
-    #     self.thread.started.connect(self.worker.run)
-    #     self.worker.finished.connect(self.thread.quit)
-    #     self.worker.finished.connect(self.worker.deleteLater)
-    #     self.thread.finished.connect(self.thread.deleteLater)
-    #     self.worker.progress.connect(self.reportProgress)
-    #     self.thread.start()
-    #
-    #     # Final resets
-    #     self.download_button.setEnabled(False)
-    #     self.link.setEnabled(False)
-    #     self.download_list_button.setEnabled(False)
-    #     self.link_multi.setEnabled(False)
-    #     self.spotify_button.setEnabled(False)
-    #     self.thread.finished.connect(
-    #         lambda: self.download_button.setEnabled(True)
-    #     )
-    #     self.thread.finished.connect(
-    #         lambda: self.link.clear()
-    #     )
-    #     self.thread.finished.connect(
-    #         lambda: self.link.setEnabled(True)
-    #     )
-    #     self.thread.finished.connect(
-    #         lambda: self.download_list_button.setEnabled(True)
-    #     )
-    #     self.thread.finished.connect(
-    #         lambda: self.spotify_button.setEnabled(True)
-    #     )
-    #     self.thread.finished.connect(
-    #         lambda: self.link_multi.setEnabled(True)
-    #     )
 
     #########################This triggers the Worker2 Thread#######################
     def download_list_clicked(self):  # thread 2
@@ -474,7 +399,8 @@ class MainUiWindow(QMainWindow):
     ################################################
 
     def open_folder_clicked(self):
-        path = self.download_location_label_multi.text()
+        path = self.download_location.text()
+
         if platform == "win32":
             try:
                 os.startfile(path)

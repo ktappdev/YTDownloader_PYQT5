@@ -283,6 +283,9 @@
        </widget>
       </item>
       <item>
+       <widget class="QLineEdit" name="download_location"/>
+      </item>
+      <item>
        <widget class="QPushButton" name="change_location_button_multi">
         <property name="maximumSize">
          <size>
@@ -302,46 +305,6 @@
          <string>Change Destination</string>
         </property>
         <property name="flat">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item alignment="Qt::AlignLeft">
-       <widget class="QLabel" name="download_location_label_multi">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>15</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>Arial</family>
-          <italic>true</italic>
-         </font>
-        </property>
-        <property name="styleSheet">
-         <string notr="true">background-color: rgb(255, 255, 255);</string>
-        </property>
-        <property name="frameShape">
-         <enum>QFrame::NoFrame</enum>
-        </property>
-        <property name="text">
-         <string>Download Location :</string>
-        </property>
-        <property name="scaledContents">
-         <bool>true</bool>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-        <property name="wordWrap">
          <bool>false</bool>
         </property>
        </widget>
