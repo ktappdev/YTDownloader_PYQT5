@@ -141,7 +141,6 @@ class Worker2(QObject):  # Second Thread for commit
         self.progress_bar_multi.emit(0)
         self.finished.emit()
 
-
 class Worker3(QObject):  # third Thread spotify process
     finished = pyqtSignal()
     progress_bar_multi = pyqtSignal(int)  # for Progress bar on multi page
@@ -151,7 +150,6 @@ class Worker3(QObject):  # third Thread spotify process
     def run(self):
         try:
             global global_csv_file_path
-
             tags = []
             with open(global_csv_file_path[0], encoding="utf8") as file:
                 reader = csv.reader(file)
