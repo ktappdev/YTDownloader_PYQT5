@@ -71,6 +71,7 @@ global_csv_file_path = ''
 class Worker2(QObject):  # Second Thread for commit
     finished = pyqtSignal()
     progress_bar_multi = pyqtSignal(int)  # for Progress bar on multi page
+    pb_max = pyqtSignal(int)
     progress_multi = pyqtSignal(str)  # for label on multi page
     download_count_label = pyqtSignal(str)  # for label on multi page
 
@@ -83,19 +84,25 @@ class Worker2(QObject):  # Second Thread for commit
             #################### Youtube URL detection and download #####################
             list_of_urls_ = func.read_urls_from_search_box(mainuiwindow.link_multi.toPlainText())
             if list_of_urls_:
+                self.pb_max.emit(len(list_of_urls_))
                 self.progress_multi.emit(f'Found {len(list_of_urls_)} youtube urls, Downloading...')
                 for link in list_of_urls_:
                     down_inf = youtube_single_download(link, download_location)
                     self.progress_multi.emit(f'Downloaded - {down_inf[0]}')
+                    self.progress_bar_multi.emit(mainuiwindow.progress_bar_multi.value() + 1)
+
+                self.progress_bar_multi.emit(0)
                 self.finished.emit()
                 return
             ########## if there isn't any youtube link then its a text list ###########
 
             ################## youtube SERACH
             songs = mainuiwindow.link_multi.toPlainText().split("\n")
+            songs = list(filter(None, songs)) #filter empty
+            self.pb_max.emit(len(songs))
             # p = round(100 / len(songs))
-            progress_split = 100 / int(len(songs))
-            progress_split_ = 0
+            # progress_split = 100 / int(len(songs))
+            # progress_split_ = 0
             video_list = []
             for song in songs:
                 # Get clenliness on every loop, should be able to hot swap
@@ -123,16 +130,16 @@ class Worker2(QObject):  # Second Thread for commit
                 stream = yt.streams.get_audio_only()
                 self.progress_multi.emit(f'Downloading...{yt.title}')
                 file_path = stream.download(output_path=download_location)
-                download_info = [yt.title, file_path, yt.vid_info]
+                # download_info = [yt.title, file_path, yt.vid_info]
                 try:
-                    self.progress_multi.emit('...converting, renaming and adding IDTags...')
+                    self.progress_multi.emit(f'...converting, renaming and adding IDTags to - {yt.title}')
                     func.convert_rename_add_tags(file_path)
                 except Exception as ex:
                     print(ex)
-                self.progress_multi.emit(f'Downloaded - {download_info[0]}')
-                progress_split_ = progress_split_ + round(progress_split)
-                self.progress_bar_multi.emit(progress_split_)
-
+                self.progress_multi.emit(f'Downloaded - {yt.title}')
+                # progress_split_ = progress_split_ + round(progress_split)
+                # self.progress_bar_multi.emit(progress_split_)
+                self.progress_bar_multi.emit(mainuiwindow.progress_bar_multi.value() + 1)
                 self.progress_multi.emit('Download complete')
                 video_list.clear()
         except Exception as e:
@@ -146,6 +153,7 @@ class Worker3(QObject):  # third Thread spotify process
     progress_bar_multi = pyqtSignal(int)  # for Progress bar on multi page
     progress_multi = pyqtSignal(str)  # for label on multi page
     download_count_label = pyqtSignal(str)  # for label on multi page
+    pb_max = pyqtSignal(int)
 
     def run(self):
         try:
@@ -172,11 +180,9 @@ class Worker3(QObject):  # third Thread spotify process
                 tempo_index = header.index('Tempo')
                 song_count = 0
                 video_list = []
-                progress_split = 100 / int(songs_in_csv)
-                progress_split_ = 0.0
+                print(songs_in_csv)
+                self.pb_max.emit(songs_in_csv)
                 download_location = mainuiwindow.download_location.text()
-
-                # self.download_count_label.emit(f'Downloading song 1 of {songs_in_csv}')
 
                 for song in reader:
                     # Get cleanliness on every loop, should be able to hot swap
@@ -220,14 +226,13 @@ class Worker3(QObject):  # third Thread spotify process
                     # download_info = [yt.title, file_path, yt.vid_info]
 
                     try:
-                        self.progress_multi.emit('...converting, renaming and adding IDTags...')
+                        self.progress_multi.emit(f'...converting, renaming and adding IDTags to - {yt.title}')
                         func.convert_rename_add_tags(file_path, tags=tags)
                         tags.clear()
                         video_list.clear()
                     except Exception as ex:
                         print(ex)
-                    progress_split_ = progress_split_ + progress_split
-                    self.progress_bar_multi.emit(math.ceil(progress_split_)) #round up
+                    self.progress_bar_multi.emit(mainuiwindow.progress_bar_multi.value() + 1)
 
             self.progress_multi.emit(f'All downloads complete, ready for more!')
             self.download_count_label.emit(f'Ready To Download')
@@ -277,7 +282,9 @@ class MainUiWindow(QMainWindow):
         self.change_location_button_multi = self.findChild(QPushButton, "change_location_button_multi")
         self.progress_bar_multi = self.findChild(QProgressBar, "progress_bar_multi")
 
+
         # Actions
+        self.progress_bar_multi.setMaximum(100)
         self.download_location.setText(f'{func.get_os_downloads_folder()}/Youtube/Multi')
         self.download_list_button.clicked.connect(self.download_list_clicked)
         self.open_folder_multi.clicked.connect(lambda: self.open_folder_clicked())
@@ -312,6 +319,11 @@ class MainUiWindow(QMainWindow):
     def report_progress_bar_multi(self, s):
         self.progress_bar_multi.setValue(s)
 
+    def setPB_Max(self, s):
+        print('progress bar max value before change ', self.progress_bar_multi.maximum())
+        self.progress_bar_multi.setMaximum(s)
+        print('progress bar max value after change ', self.progress_bar_multi.maximum())
+
 
     def download_location_picker(self):
         user_location = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
@@ -343,6 +355,8 @@ class MainUiWindow(QMainWindow):
         self.thread2.finished.connect(self.thread2.deleteLater)
         self.worker2.progress_multi.connect(self.reportProgress_multi)
         self.worker2.progress_bar_multi.connect(self.report_progress_bar_multi)
+        self.worker2.pb_max.connect(self.setPB_Max)
+
         self.worker2.download_count_label.connect(self.report_count_Progress_multi)
 
         self.thread2.start()
@@ -379,6 +393,7 @@ class MainUiWindow(QMainWindow):
         self.worker3.progress_multi.connect(self.reportProgress_multi)
         self.worker3.download_count_label.connect(self.report_count_Progress_multi)
         self.worker3.progress_bar_multi.connect(self.report_progress_bar_multi)
+        self.worker3.pb_max.connect(self.setPB_Max)
         self.thread3.start()
         # Final resets
         self.download_list_button.setEnabled(False)
