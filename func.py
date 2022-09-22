@@ -99,7 +99,7 @@ def convert_rename_add_tags(mp4_path, tags=None):
                         genre=tags[3])
         except Exception as e:
             print(e)
-    return 'Convert complete'
+    return 'Convert complete!'
 
 
 def read_urls_from_search_box(search_box_contents):
